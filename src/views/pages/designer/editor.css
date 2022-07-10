@@ -1,0 +1,39 @@
+ .cdx-block {
+    width: inherit !important; 
+} 
+.cdx-checklist{
+    width: 95% !important;
+}
+.cdx-checklist__item{
+    width: inherit !important;
+}
+.codex-editor__redactor{
+    width:  98.5% !important;
+} 
+
+.ce-header{
+}
+.ce-block {
+    width: inherit !important;
+}
+ 
+@media (min-width:651px) {
+.ce-popover{
+    position: absolute;
+    left: auto;
+    right: 1%
+}
+}.ce-toolbar{
+    position: absolute;
+    left: auto
+}
+.ce-settings{
+    left:auto;
+    right:1%
+}
+.ce-block__content{
+    width: inherit !important;
+    max-width: none;
+}
+
+ 

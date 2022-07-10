@@ -1,0 +1,25 @@
+.form-control {
+    background-color: white;
+}
+.bs-stepper .step-trigger:focus {
+    color: #6c657d !important    ;
+    outline: 0;
+}
+.bs-stepper-content {
+    /* background-color: white !important; */
+    border-radius: 0 !important;
+}
+.bs-stepper-header {
+    background-color: #ededed !important;
+    /* box-shadow:0 0.5rem 1rem rgb(34 41 47 / 15%); */
+    padding-right: 85px !important
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    border-color: green;
+    background-color: green;
+}
+
+.custom-switch .custom-control-label::before {
+    background-color: red;
+}

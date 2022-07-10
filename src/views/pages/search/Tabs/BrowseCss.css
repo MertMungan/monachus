@@ -1,0 +1,17 @@
+.wrapper {
+  border-radius: 0em !important;
+  border-top-right-radius: 0.357em !important;
+}
+
+.MuiSelect-select {
+  padding-right: 13px ;
+  padding-top: 13px ;
+  padding-bottom: 13px;
+}
+
+.card {
+  border-top-right-radius: 0em !important;
+  border-top-left-radius: 0em !important;
+
+
+}

@@ -1,0 +1,24 @@
+.side-drawer {
+  height: fit-content;
+  background: white;
+  position: fixed;
+  top: 40%;
+  right: 0;
+  width: 40%;
+  z-index: 200;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+}
+.side-drawer.open {
+  transform: translateX(0);
+}
+.illustration-container{
+  margin-top: 50px;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+.illustration{
+  height:300px;
+  align-self: center;
+}
