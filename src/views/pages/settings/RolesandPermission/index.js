@@ -8,6 +8,7 @@ import RoleFirstStep from "./RoleFirstStep";
 import RoleSecondStep from "./RoleSecondStep";
 import { addRole, fetchRoles } from "../../../../redux/actions/roles";
 import {fetchKeycloakRoles} from "../../../../redux/actions/keycloakRoles"
+import { fetchKeycloakClientRoles } from '../../../../redux/actions/keycloakClientRoles'
 import BreadCrumbs from "@components/breadcrumbs";
 
 export const Roles = ({
@@ -15,7 +16,9 @@ export const Roles = ({
   addRole = () => {},
   fetchRoles = () => {},
   fetchKeycloakRoles = () => {},
-  keycloakRolesList = []
+  keycloakRolesList = [],
+  clientRoles = [],
+  fetchKeycloakClientRoles = () => {},
 
 }) => {
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -114,6 +117,7 @@ export const Roles = ({
   useEffect(() => {
     fetchRoles();
     fetchKeycloakRoles();
+    fetchKeycloakClientRoles();
   }, []);
 
   // console.log("keycloakRolesList",keycloakRolesList)
@@ -155,7 +159,7 @@ export const Roles = ({
         ) : (
           <>
             <UsersTable
-              listData={keycloakRolesList}
+              listData={clientRoles}
               setWizardOpen={setWizardOpen}
               wizardOpen={wizardOpen}
               setResetInfo={setResetInfo}
@@ -171,7 +175,9 @@ export const Roles = ({
 
 const mapStateToProps = (state) => ({
   rolesList: state.rolesReducer,
-  keycloakRolesList: state.keycloakRolesReducer
+  keycloakRolesList: state.keycloakRolesReducer,
+  clientRoles: state.keycloakRolesClinetReducer
+
 });
 
-export default connect(mapStateToProps, { addRole, fetchRoles,fetchKeycloakRoles })(Roles);
+export default connect(mapStateToProps, { addRole, fetchRoles, fetchKeycloakRoles, fetchKeycloakClientRoles })(Roles);

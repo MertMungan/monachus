@@ -39,7 +39,7 @@ function UserFirstStep(props) {
   }, [])
 
   const onSubmit = (data) => {
-    createKeycloakUser(data)
+    createKeycloakUser(data, roles)
     reset()
     setWizardOpen(false)
   }

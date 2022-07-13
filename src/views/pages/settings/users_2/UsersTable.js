@@ -26,7 +26,8 @@ import { connect } from 'react-redux'
 import { fetchUsers } from '../../../../redux/actions/users'
 import {
   fetchKeycloakUsers,
-  deleteKeycloakUser
+  deleteKeycloakUser,
+  getUserWithClientRoles
 } from '../../../../redux/actions/keycloakUsers'
 
 // ** Styles
@@ -52,7 +53,9 @@ const UsersTable = ({
   appliedEvent = '',
   keycloakUserList = [],
   fetchKeycloakUsers = () => {},
-  deleteKeycloakUser = () => {}
+  deleteKeycloakUser = () => {},
+  getUserWithClientRoles = () => {},
+  keycloakUsersWithRoles= [],
 }) => {
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
@@ -73,6 +76,7 @@ const UsersTable = ({
 
   useEffect(() => {
     fetchKeycloakUsers()
+    getUserWithClientRoles()
     if (listBilgisi.length > 0) {
       // listBilgisi'nin elementleri arasında category propertysi listedCategory'a eşit olanları filtrele
       /*  const filteredData = queryList.data?.filter((item) => {
@@ -82,7 +86,7 @@ const UsersTable = ({
     }
   }, [listedCategory])
 
-  // console.log("keycloakUserList",keycloakUserList)
+   console.log("keycloakUsersWithRoles",keycloakUsersWithRoles)
 
   const handleFilter = (e) => {
     const value = e.target.value
@@ -123,7 +127,7 @@ const UsersTable = ({
   const columns = [
     {
       name: 'Name',
-      selector: (row) => row.username,
+      selector: (row) => row.user.username,
       sortable: true
     },
     {
@@ -133,10 +137,10 @@ const UsersTable = ({
 
       selector: (row) => {
         if (row) {
-          return row.userRoles?.map((assignee, index) => {
+          return row.userRoles?.mappings?.map((assignee, index) => {
             return (
-              <Badge pill color={colors[assignee]} className='text-capitalize'>
-                {assignee}
+              <Badge pill color={colors[assignee.name]} className='text-capitalize'>
+                {assignee.name}
               </Badge>
             )
           })
@@ -148,12 +152,12 @@ const UsersTable = ({
 
     {
       name: 'Contact',
-      selector: (row) => row.createdTimestamp,
+      selector: (row) => row.user.createdTimestamp,
       sortable: true
     },
     {
       name: 'Email',
-      selector: (row) => row.email,
+      selector: (row) => row.user.email,
       sortable: true
     },
     {
@@ -289,7 +293,7 @@ const UsersTable = ({
           sortIcon={<ChevronDown size={10} />}
           paginationDefaultPage={currentPage + 1}
           paginationComponent={CustomPagination}
-          data={searchValue.length ? filteredData : keycloakUserList}
+          data={searchValue.length ? filteredData : keycloakUsersWithRoles}
         />
       </Card>
     </Fragment>
@@ -298,12 +302,14 @@ const UsersTable = ({
 const mapStateToProps = (state) => {
   return {
     userList: state.usersReducer,
-    keycloakUserList: state.keycloakUsersReducer
+    keycloakUserList: state.keycloakUsersReducer,
+    keycloakUsersWithRoles: state.keycloakUsersWithRolesReducer
   }
 }
 
 export default connect(mapStateToProps, {
   fetchUsers,
   fetchKeycloakUsers,
-  deleteKeycloakUser
+  deleteKeycloakUser,
+  getUserWithClientRoles,
 })(UsersTable)

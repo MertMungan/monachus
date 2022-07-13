@@ -8,15 +8,6 @@ import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import {
   ChevronDown,
-  Share,
-  Printer,
-  FileText,
-  File,
-  Grid,
-  Copy,
-  Plus,
-  MoreVertical,
-  Archive,
   Trash,
   Edit,
 } from "react-feather";
@@ -25,24 +16,14 @@ import {
   CardHeader,
   CardTitle,
   Button,
-  UncontrolledButtonDropdown,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
   Input,
   Label,
   Row,
   Col,
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
 } from "reactstrap";
 // REDUX
 import { connect } from "react-redux";
-
+import {deleteKeycloakClientRoles} from "../../../../redux/actions/keycloakClientRoles"
 // REDUX
 
 // ** Styles
@@ -63,6 +44,7 @@ const UsersTable = ({
   eventsArray = [],
   setSelectedEvent = () => { },
   setSelectedRule = () => { },
+  deleteKeycloakClientRoles = () => { },
   appliedEvent = "",
 }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -139,7 +121,7 @@ const UsersTable = ({
               })
               setWizardOpen(true)
             }}></Edit>
-            <Trash size={15}></Trash>
+            <Trash size={15} onClick={() => {deleteKeycloakClientRoles(row.name)}}></Trash>
           </div>
         );
       },
@@ -265,4 +247,4 @@ const mapStateToProps = (state) => {
   return {};
 };
 
-export default connect(mapStateToProps, {})(UsersTable);
+export default connect(mapStateToProps, {deleteKeycloakClientRoles})(UsersTable);

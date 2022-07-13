@@ -5,7 +5,7 @@ import { Row, Col, Form, Button } from "reactstrap";
 import { ArrowRight } from "react-feather";
 import { connect } from "react-redux";
 // REDUX
-import {createKeycloakRoles} from "../../../../redux/actions/keycloakRoles"
+import {createKeycloakClientRoles} from "../../../../redux/actions/keycloakClientRoles"
 
 function UserFirstStep(props) {
   const {
@@ -15,8 +15,8 @@ function UserFirstStep(props) {
     setWizardOpen,
     resetName,
     resetDescription,
-    createKeycloakRoles,
-    keycloakRolesList
+    clientRoles,
+    createKeycloakClientRoles
   } = props;
 
   const {
@@ -27,7 +27,7 @@ function UserFirstStep(props) {
   } = useForm();
 
   const onSubmit = (data) => {
-    createKeycloakRoles(data)
+    createKeycloakClientRoles(data)
     setRoleFirstStep(data.roleName, data.roleDescription);
     reset();
   };
@@ -113,8 +113,9 @@ UserFirstStep.propTypes = {
   setRoleFirstStep: PropTypes.func,
   resetName: PropTypes.string,
   resetDescription: PropTypes.string,
-  createKeycloakRoles: PropTypes.func,
-  keycloakRolesList: PropTypes.array
+  createKeycloakClientRoles: PropTypes.func,
+  clientRoles: PropTypes.array,
+
   /*   addUser: PropTypes.func,
    */
 };
@@ -122,7 +123,8 @@ UserFirstStep.propTypes = {
 const mapStateToProps = (state) => {
   return { 
     rolesList: state.rolesReducer,
-    keycloakRolesList: state.keycloakRolesReducer };
+    clientRoles: state.keycloakRolesClinetReducer
+  };
 };
 
-export default connect(mapStateToProps, {createKeycloakRoles})(UserFirstStep);
+export default connect(mapStateToProps, {createKeycloakClientRoles})(UserFirstStep);

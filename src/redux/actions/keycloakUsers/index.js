@@ -1,5 +1,34 @@
 import axios from 'axios'
 
+export const getUserWithClientRoles = () => async (dispatch, getState) => {
+  const currentUsers = getState().keycloakUsersReducer
+  let usersWithClientRoles = []
+  const bearerToken = JSON.parse(
+    localStorage.getItem('userAccessToken')
+  ).userAccessToken
+  for (let index = 0; index < currentUsers.length; index++) {
+    var config = {
+      method: 'get',
+      url: `https://apps.belgesakla.com/auth/admin/realms/Monachus/users/${currentUsers[index].id}/role-mappings`,
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
+      }
+    }
+    let userAllRoles = await axios(config)
+    if (userAllRoles?.data?.clientMappings) {
+      console.log(
+        'userAllRoles.clientMappings',
+        userAllRoles?.data?.clientMappings['auth-monachus']
+      )
+      usersWithClientRoles.push({
+        user: currentUsers[index],
+        userRoles: userAllRoles?.data?.clientMappings['auth-monachus']
+      })
+    }
+  }
+  dispatch({ type: 'FETCH_KEYCLOAK_USERS_WITH_ROLES', payload: usersWithClientRoles })
+}
+
 export const fetchKeycloakUsers = () => async (dispatch, getState) => {
   const bearerToken = JSON.parse(
     localStorage.getItem('userAccessToken')
@@ -17,6 +46,7 @@ export const fetchKeycloakUsers = () => async (dispatch, getState) => {
     .then(function (response) {
       // console.log(JSON.stringify(response.data));
       dispatch({ type: 'FETCH_KEYCLOAK_USERS', payload: response.data })
+      dispatch(getUserWithClientRoles())
     })
     .catch(function (error) {
       console.log(error)
@@ -121,35 +151,14 @@ export const deleteKeycloakUser =
 export const addClientRoleToUser =
   (userId = '', keycloakRoleData = []) =>
   async (dispatch, getState) => {
-    debugger
-    const ClientName = JSON.parse(localStorage.getItem('userClientId')).userName
-    let realmClients = await getRealmClients()
-    let choosenClient = realmClients.find(
-      (client) => client.clientId === ClientName
-    )
-
-    let clientRoles = fetchKeycloakClientRoles()
-    let list = []
-
-    for (let index = 0; index < clientRoles.length; index++) {
-      for (let minedx = 0; minedx < keycloakRoleData.length; minedx++) {
-        if (clientRoles[index].name === keycloakRoleData[minedx]) {
-          list.push(clientRoles[index])
-        }
-      }
-    }
-    console.log('====================================')
-    console.log('list: ' + list)
-    console.log('====================================')
     const bearerToken = JSON.parse(
       localStorage.getItem('userAccessToken')
     ).userAccessToken
-
-    var data = JSON.stringify(list)
-
+    var data = JSON.stringify(keycloakRoleData)
+    const userClient = localStorage.getItem('ClientName_Id')
     var config = {
       method: 'post',
-      url: `https://apps.belgesakla.com/auth/admin/realms/Monachus/users/${userId}/role-mappings/clients/${choosenClient.id}`,
+      url: `https://apps.belgesakla.com/auth/admin/realms/Monachus/users/${userId}/role-mappings/clients/${userClient}`,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${bearerToken}`
@@ -157,22 +166,19 @@ export const addClientRoleToUser =
       data: data
     }
 
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data))
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
+    const isRolesAdded = await axios(config)
+    if (isRolesAdded) {
+      console.log('isRolesAdded: ', isRolesAdded)
+    }
   }
 
 export const createKeycloakUser =
-  (keycloakUserData = []) =>
+  (keycloakUserData = [], roles = []) =>
   async (dispatch, getState) => {
     const bearerToken = JSON.parse(
       localStorage.getItem('userAccessToken')
     ).userAccessToken
-    let user = {}
+
     var data = JSON.stringify({
       username: keycloakUserData.userName,
       enabled: true,
@@ -198,7 +204,7 @@ export const createKeycloakUser =
           temporary: false
         }
       ],
-      realmRoles: ['mb-user']
+      realmRoles: ['mb_user']
     })
 
     var config = {
@@ -210,27 +216,25 @@ export const createKeycloakUser =
       },
       data: data
     }
-
     const isUserCreated = await axios(config)
+    let userId = ''
     if (isUserCreated) {
-      debugger
-      dispatch(fetchKeycloakUsers())
-      const usuers = getState().keycloakUsersReducer
-      console.log('====================================')
-      console.log('usuers: ', usuers)
-      console.log('====================================')
-    }
+      userId =
+        isUserCreated.headers.location.split('/')[
+          isUserCreated.headers.location.split('/').length - 1
+        ]
 
-    // axios(config)
-    //   .then(function (response) {
-    //     console.log(JSON.stringify(response.data))
-    //     user = fetchKeycloakUsersByMail(keycloakUserData.userEmail)
-    //     if (user?.Id) {
-    //       addClientRoleToUser(user.Id)
-    //     }
-    //     dispatch(fetchKeycloakUsers())
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error)
-    //   })
+      const clientRoles = getState().keycloakRolesClinetReducer
+
+      let keycloakRoleData = []
+
+      for (let index = 0; index < roles.length; index++) {
+        for (let minedx = 0; minedx < clientRoles.length; minedx++) {
+          if (roles[index] === clientRoles[minedx].name) {
+            keycloakRoleData.push(clientRoles[minedx])
+          }
+        }
+      }
+      dispatch(addClientRoleToUser(userId, keycloakRoleData))
+    }
   }
