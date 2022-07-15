@@ -190,12 +190,11 @@ const CustomHeader = ({
     </div>
   );
 };
-
 const Table = ({
   eventList = [],
-  fetchEvents = () => {},
+  fetchEvents = () => { },
   queryList = [],
-  fetchRule = () => {},
+  fetchRule = () => { },
 }) => {
   // ** Store Vars
   const store = useSelector((state) => state.users);
@@ -220,6 +219,8 @@ const Table = ({
     label: "Select Status",
     number: 0,
   });
+  console.log("queryList",queryList)
+
   const [stepper, setStepper] = useState(null);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [rules, setRules] = useState([]);
@@ -234,9 +235,7 @@ const Table = ({
     {
       name: "Event Name",
       selector: (row) =>
-        eventList.length > 0
-          ? eventList.find((e) => e.eventId === row.eventID).eventName
-          : "",
+      eventList.length > 0 && eventList.find((e) => e.eventId === row.eventID)?.eventName,
       sortable: true,
     },
 
@@ -255,7 +254,6 @@ const Table = ({
       selector: (row) => row.category,
       sortable: true,
     },
-
     {
       name: "Actions",
       minWidth: "100px",
@@ -524,7 +522,7 @@ const Table = ({
                 sortIcon={<ChevronDown />}
                 className="react-dataTable"
                 paginationComponent={CustomPagination}
-                data={rules}
+                data={queryList.data}
                 subHeaderComponent={
                   <CustomHeader
                     store={store}

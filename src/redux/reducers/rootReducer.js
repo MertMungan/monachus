@@ -41,6 +41,7 @@ import keycloakTokenReducer from './keycloakToken'
 import keycloakRolesReducer from './keycloakRoles'
 import keycloakRolesClinetReducer from './keycloakClientRoles'
 import keycloakUsersWithRolesReducer from './keycloakUsersWithRoles'
+import monachusRoleReducer from './monachusRoles'
 // ** Root Reducer
 const rootReducer = combineReducers({
   auth,
@@ -80,6 +81,7 @@ const rootReducer = combineReducers({
   keycloakRolesReducer,
   keycloakRolesClinetReducer,
   keycloakUsersWithRolesReducer,
+  monachusRoleReducer,
 })
 
 export default rootReducer

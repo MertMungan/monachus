@@ -58,20 +58,29 @@ const FieldsTable = ({
   const [listBilgisi, setListBilgisi] = useState([]);
 
   useEffect(() => {
-    if (resetFields.length === 0 && listData.length > 0) {
+    if (resetFields.length === 0 && listData) {
+      // push listData to listBilgisi while keeping the previous state
       let list = [...listBilgisi, listData];
-      // console.log(list);
+      // if the first element of the list is an empty array, remove it
+      if (list[0].length === 0) {
+        list.shift();
+      }
       setListBilgisi(list);
-    } else if (resetFields.length > 0 && listData.length === 0) {
-      // console.log("reset", resetFields);
-
+    } else if (resetFields.length !== 0 && listData) {
       let mapped = resetFields.map((item) => {
         return {
           factDefination: item.factDefination,
           factType: item.factType,
         };
       });
-      setListBilgisi(mapped);
+      let list = [...mapped, listData];
+      // if any element of the list is an empty array, remove it
+      list.forEach((item) => {
+        if (item.length === 0) {
+          list.splice(list.indexOf(item), 1);
+        }
+      });
+      setListBilgisi(list);
     }
   }, [listData, resetFields]);
 

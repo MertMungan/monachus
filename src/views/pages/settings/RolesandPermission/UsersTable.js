@@ -6,11 +6,7 @@ import ReactPaginate from "react-paginate";
 
 // ** Third Party Components
 import DataTable from "react-data-table-component";
-import {
-  ChevronDown,
-  Trash,
-  Edit,
-} from "react-feather";
+import { ChevronDown, Trash, Edit } from "react-feather";
 import {
   Card,
   CardHeader,
@@ -23,7 +19,7 @@ import {
 } from "reactstrap";
 // REDUX
 import { connect } from "react-redux";
-import {deleteKeycloakClientRoles} from "../../../../redux/actions/keycloakClientRoles"
+import { deleteKeycloakClientRoles } from "../../../../redux/actions/keycloakClientRoles";
 // REDUX
 
 // ** Styles
@@ -46,6 +42,7 @@ const UsersTable = ({
   setSelectedRule = () => { },
   deleteKeycloakClientRoles = () => { },
   appliedEvent = "",
+  setReadOnly = () => { },
 }) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -90,6 +87,7 @@ const UsersTable = ({
     }
   };
 
+  const RolePermissionData = JSON.parse(localStorage.getItem('monachusRoleData'))
   const columns = [
     {
       name: "Name",
@@ -107,21 +105,31 @@ const UsersTable = ({
       cell: (row) => {
         return (
           <div className="d-flex">
-            <Edit size={15} onClick={() => {
-              setResetInfo({
-                roleId: row.roleId,
-                roleName: row.roleName,
-                roleDescription: row.roleDescription,
-                rolePermissions: {
-                  dashboardsCRUD: row.rolePermissions.dashboardsCRUD,
-                  cepCRUD: row.rolePermissions.cepCRUD,
-                  settingsCRUD: row.rolePermissions.settingsCRUD,
-                  dataFlowCRUD: row.rolePermissions.dataFlowCRUD, 
-                }
-              })
-              setWizardOpen(true)
-            }}></Edit>
-            <Trash size={15} onClick={() => {deleteKeycloakClientRoles(row.name)}}></Trash>
+            <Edit
+              size={15}
+              onClick={() => {
+                const filteredPermissions = RolePermissionData?.find(item => item.roleName === row.name)
+                if (filteredPermissions) {setReadOnly(true)}
+                setResetInfo({
+                  roleName: row.name,
+                  roleDescription: row.description,
+                  rolePermissions: {
+                    dashboardsCRUD: filteredPermissions?.dashboardsCRUD || false,
+                    cepCRUD: filteredPermissions?.cepCRUD || false,
+                    settingsCRUD: filteredPermissions?.settingsCRUD || false,
+                    dataFlowCRUD: filteredPermissions?.dataFlowCRUD || false,
+                  }
+                });
+                setWizardOpen(true);
+
+              }}
+            ></Edit>
+            <Trash
+              size={15}
+              onClick={() => {
+                deleteKeycloakClientRoles(row.name);
+              }}
+            ></Trash>
           </div>
         );
       },
@@ -197,12 +205,8 @@ const UsersTable = ({
               className="ml-2"
               color="primary"
               onClick={() => {
-                setWizardOpen(!wizardOpen)
-                setResetInfo({
-                  roleId: "",
-                  roleName: "",
-                  roleDescription: "",
-                })
+                setResetInfo({});
+                setWizardOpen(!wizardOpen);
               }}
             >
               <span className="align-middle ml-50">Create Role</span>
@@ -247,4 +251,6 @@ const mapStateToProps = (state) => {
   return {};
 };
 
-export default connect(mapStateToProps, {deleteKeycloakClientRoles})(UsersTable);
+export default connect(mapStateToProps, { deleteKeycloakClientRoles })(
+  UsersTable
+);

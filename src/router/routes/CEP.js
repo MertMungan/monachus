@@ -1,23 +1,23 @@
-import { lazy } from "react";
+import { lazy } from 'react'
 
 const CEPRoutes = [
   {
-    path: "/monachus/events",
-    component: lazy(() => import("../../views/dashboard/testdashboard")),
+    path: '/monachus/events',
+    component: lazy(() => import('../../views/dashboard/testdashboard')),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
-    },
+      action: 'read',
+      resource: 'Monachus'
+    }
   },
   {
-    path: "/monachus/rules",
-    component: lazy(() => import("../../views/pages/rules/index.js")),
+    path: '/monachus/rules',
+    component: lazy(() => import('../../views/pages/rules/index.js')),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
-    },
+      action: 'manage',
+      resource: 'Monachus'
+    }
   },
   // {
   //   path: "/monachus/rulebuilder",
@@ -30,43 +30,41 @@ const CEPRoutes = [
   // },
 
   {
-    path: "/monachus/flow",
-    component: lazy(() => import("../../views/pages/misc/WIP")),
+    path: '/monachus/flow',
+    component: lazy(() => import('../../views/pages/misc/WIP')),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
-    },
+      action: 'manage',
+      resource: 'Monachus'
+    }
   },
   {
-    path: "/monachus/rulecategories",
-    component: lazy(() => import("../../views/pages/ruleCategory")),
+    path: '/monachus/rulecategories',
+    component: lazy(() => import('../../views/pages/ruleCategory')),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
-    },
-    
+      action: 'manage',
+      resource: 'Monachus'
+    }
   },
   {
-    path: "/monachus/eventbuilder",
-    component: lazy(() => import("../../views/dashboard/factbuilder")),
+    path: '/monachus/eventbuilder',
+    component: lazy(() => import('../../views/dashboard/factbuilder')),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
-    },
-    
+      action: 'manage',
+      resource: 'pato'
+    }
   },
   {
-    path: "/monachus/alerts",
-    component: lazy(() => import("../../views/pages/case-management")),
+    path: '/monachus/alerts',
+    component: lazy(() => import('../../views/pages/case-management')),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
-    },
-  },
-];
+      action: 'manage',
+      resource: 'Monachus'
+    }
+  }
+]
 
-export default CEPRoutes;
+export default CEPRoutes

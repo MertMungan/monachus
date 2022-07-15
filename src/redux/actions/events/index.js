@@ -57,17 +57,6 @@ export const addEvents =
   async (dispatch) => {
     if (data.eventName === "") return;
     let finalEventList = [];
-    const eventList = await instance.get(
-      `/events/list`,
-      {
-        params: {
-          userId: user,
-        },
-      },
-      {
-        headers: { ...headers(), ...userHeaders() },
-      }
-    );
 
     const sendData = {
       userId: user,
@@ -77,18 +66,12 @@ export const addEvents =
       userClientId: userClientName,
       data: data,
     };
-    if (eventList.data.data.length > 0) {
-      const jsoneventList = eventList.data.data;
-      if (Array.isArray(jsoneventList)) {
-        // console.log("83. SATIRA GİRDİ");
 
-        const mata = await instance.post(`/events/addevent`, sendData, {
-          headers: { ...headers(), ...userHeaders() },
-        });
-        if (mata.status === 200) {
-          dispatch(fetchEvents());
-        }
-      }
+    const mata = await instance.post(`/events/addevent`, sendData, {
+      headers: { ...headers(), ...userHeaders() },
+    });
+    if (mata.status === 200) {
+      dispatch(fetchEvents());
     }
   };
 
@@ -107,10 +90,10 @@ export const updateEvents = (id, data) => async (dispatch) => {
   const jsoneventList = eventList.data.data;
   jsoneventList.find(function (item) {
     if (item.eventId === id) {
-      if (item.fields.length > 0) {
+      if (item.fields.length === 0) {
         item.fields = [data[0]];
       } else {
-        item.fields = [data[0]];
+        item.fields = data;
       }
     }
   });

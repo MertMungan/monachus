@@ -7,9 +7,10 @@ import uuid from "react-uuid";
 import RoleFirstStep from "./RoleFirstStep";
 import RoleSecondStep from "./RoleSecondStep";
 import { addRole, fetchRoles } from "../../../../redux/actions/roles";
-import {fetchKeycloakRoles} from "../../../../redux/actions/keycloakRoles"
-import { fetchKeycloakClientRoles } from '../../../../redux/actions/keycloakClientRoles'
+import { fetchKeycloakRoles } from "../../../../redux/actions/keycloakRoles";
+import { fetchKeycloakClientRoles } from "../../../../redux/actions/keycloakClientRoles";
 import BreadCrumbs from "@components/breadcrumbs";
+import { createMonachusRole } from "../../../../redux/actions/monachusRoles";
 
 export const Roles = ({
   rolesList = [],
@@ -19,7 +20,8 @@ export const Roles = ({
   keycloakRolesList = [],
   clientRoles = [],
   fetchKeycloakClientRoles = () => {},
-
+  createMonachusRole = () => {},
+  monachusRole = [],
 }) => {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [stepper, setStepper] = useState(null);
@@ -30,7 +32,7 @@ export const Roles = ({
     roleName: "",
     roleDescription: "",
   });
-
+  const [readOnly, setReadOnly] = useState(false);
   const [resetInfo, setResetInfo] = useState({
     roleId: "",
     roleName: "",
@@ -91,6 +93,7 @@ export const Roles = ({
           resetDescription={resetInfo.roleDescription}
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
+          readOnly={readOnly}
         />
       ),
     },
@@ -109,15 +112,16 @@ export const Roles = ({
           resetSettings={resetInfo?.rolePermissions?.settingsCRUD}
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
+          roleInfo={roleInfo}
         />
       ),
     },
   ];
 
   useEffect(() => {
-    fetchRoles();
+    /*     fetchRoles();
     fetchKeycloakRoles();
-    fetchKeycloakClientRoles();
+    fetchKeycloakClientRoles(); */
   }, []);
 
   // console.log("keycloakRolesList",keycloakRolesList)
@@ -163,6 +167,7 @@ export const Roles = ({
               setWizardOpen={setWizardOpen}
               wizardOpen={wizardOpen}
               setResetInfo={setResetInfo}
+              setReadOnly={setReadOnly}
             />
 
             <UsersTableTwo listData={TableRoles} />
@@ -176,8 +181,13 @@ export const Roles = ({
 const mapStateToProps = (state) => ({
   rolesList: state.rolesReducer,
   keycloakRolesList: state.keycloakRolesReducer,
-  clientRoles: state.keycloakRolesClinetReducer
-
+  clientRoles: state.keycloakRolesClinetReducer,
 });
 
-export default connect(mapStateToProps, { addRole, fetchRoles, fetchKeycloakRoles, fetchKeycloakClientRoles })(Roles);
+export default connect(mapStateToProps, {
+  addRole,
+  fetchRoles,
+  fetchKeycloakRoles,
+  fetchKeycloakClientRoles,
+  createMonachusRole,
+})(Roles);

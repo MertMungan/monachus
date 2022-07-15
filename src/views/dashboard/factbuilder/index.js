@@ -166,14 +166,14 @@ function FactBuilder(props) {
     const userIdLocal = JSON.parse(localStorage.getItem("userId"));
     const eventIdLocal = localStorage.getItem("eventID");
     if (userIdLocal.userId) {
-      // console.log("factInfo", factInfo);
+      console.log("factInfo", factInfo);
       //check if factInfo's eventName, eventDescription, fields are empty
       if (
         selectedEvent === "" &&
         factInfo.eventId !== "" &&
         factInfo.eventName !== "" &&
         factInfo.eventDescription !== "" &&
-        factInfo.fields?.length > 0
+        factInfo.fields?.length !== 0
       ) {
         addEvents(userIdLocal.userId, factInfo);
       } else if (
@@ -181,7 +181,7 @@ function FactBuilder(props) {
         factInfo.eventId !== "" &&
         factInfo.eventName !== "" &&
         factInfo.eventDescription !== "" &&
-        factInfo.fields?.length > 0
+        factInfo.fields?.length !== 0
       ) {
         updateEvents(
           factInfo.eventId,

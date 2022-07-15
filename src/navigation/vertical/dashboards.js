@@ -13,58 +13,68 @@ import {
   AlignLeft,
   Activity,
   Cloud,
-  Grid,
-} from "react-feather";
+  Grid
+} from 'react-feather'
 
 export default [
   {
-    id: "dashboards",
-    title: "Dashboards",
+    id: 'dashboards',
+    title: 'Dashboards',
     icon: <Home size={20} />,
     //  badge: 'light-warning',
-    badgeText: "",
+    action: 'read',
+    resource: 'ACL',
+    badgeText: '',
     children: [
       {
-        id: "analytics",
-        title: "Analytics",
+        id: 'analytics',
+        title: 'Analytics',
         icon: <Circle size={12} />,
-        navLink: "/monachus/analytics",
-        action: "read",
-        resource: "ACL",
+        navLink: '/monachus/analytics',
+        action: 'read',
+        resource: 'ACL'
       },
       {
-        id: "monitor",
-        title: "Event Monitor",
+        id: 'cube',
+        title: 'Cube',
         icon: <Circle size={12} />,
-        navLink: "/monachus/monitor",
-        action: "read",
-        resource: "ACL",
+        navLink: '/monachus/cube',
+        action: ['create', 'read'],
+        resource: 'ACL'
       },
-    ],
+      {
+        id: 'monitor',
+        title: 'Event Monitor',
+        icon: <Circle size={12} />,
+        navLink: '/monachus/monitor',
+        action: ['create', 'read'],
+        resource: 'ACL'
+      }
+    ]
   },
   {
-    id: "cep",
-    title: "CEP",
+    id: 'cep',
+    title: 'CEP',
     icon: <Activity size={20} />,
-    badgeText: "",
-    action: "manage",
-    resource: "Monachus",
+    badgeText: '',
+    action: 'manage',
+    resource: 'ACL',
     children: [
       {
-        id: "eventBuilder",
-        title: "Events",
+        id: 'eventBuilder',
+        title: 'Events',
         icon: <Circle size={12} />,
-        navLink: "/monachus/eventbuilder",
-        action: "manage",
-        resource: "Monachus",
+        navLink: '/monachus/eventbuilder',
+        action: 'manage',
+        resource: 'ACL'
       },
       {
-        id: "ruleCategories",
-        title: "Rule Categories",
+        id: 'ruleCategories',
+        title: 'Rule Categories',
         icon: <Codesandbox size={12} />,
-        navLink: "/monachus/rulecategories",
-        action: "manage",
-        resource: "Monachus",
+        navLink: '/monachus/rulecategories',
+        action: 'manage',
+        resource: 'Monachus'
       },
       // {
       //   id: "QueryBuilder",
@@ -75,12 +85,12 @@ export default [
       //   resource: "Monachus",
       // },
       {
-        id: "rules",
-        title: "Rules",
+        id: 'rules',
+        title: 'Rules',
         icon: <Circle size={12} />,
-        navLink: "/monachus/rules",
-        action: "manage",
-        resource: "Monachus",
+        navLink: '/monachus/rules',
+        action: 'manage',
+        resource: 'ACL'
       },
 
       // {
@@ -92,14 +102,14 @@ export default [
       //   resource: "Monachus",
       // },
       {
-        id: "alerts",
-        title: "Alerts",
+        id: 'alerts',
+        title: 'Alerts',
         icon: <Circle size={12} />,
-        navLink: "/monachus/alerts",
-        action: "manage",
-        resource: "Monachus",
-      },
-    ],
+        navLink: '/monachus/alerts',
+        action: 'manage',
+        resource: 'Monachus'
+      }
+    ]
   },
   /*   {
     id: "digitalservices",
@@ -175,19 +185,21 @@ export default [
     ],
   }, */
   {
-    id: "dataflow",
-    title: "Data Flow",
+    id: 'dataflow',
+    title: 'Data Flow',
     icon: <Grid size={20} />,
     //  badge: 'light-warning',
-    badgeText: "",
+    badgeText: '',
+    action: 'read',
+    resource: 'Post',
     children: [
       {
-        id: "connectors",
-        title: "Connectors",
+        id: 'connectors',
+        title: 'Connectors',
         icon: <Codesandbox size={12} />,
-        navLink: "/monachus/connectors",
-        action: "manage",
-        resource: "Monachus",
+        navLink: '/monachus/connectors',
+        action: 'read',
+        resource: 'Post'
       },
       // {
       //   id: "cms",
@@ -198,13 +210,13 @@ export default [
       //   resource: "ACL",
       // },
       {
-        id: "integrations",
-        title: "Integrations",
+        id: 'integrations',
+        title: 'Integrations',
         icon: <Circle size={12} />,
-        navLink: "/monachus/integrations",
-        action: "read",
-        resource: "ACL",
-      },
+        navLink: '/monachus/integrations',
+        action: 'read',
+        resource: 'Post'
+      }
       // {
       //   id: "intelligence",
       //   title: "Intelligence",
@@ -213,15 +225,15 @@ export default [
       //   action: "read",
       //   resource: "ACL",
       // },
-    ],
+    ]
   },
   {
-    id: "settings",
-    title: "Settings",
+    id: 'settings',
+    title: 'Settings',
     icon: <Settings size={20} />,
-    badgeText: "",
-    action: "manage",
-    resource: "Monachus",
+    badgeText: '',
+    action: 'manage',
+    resource: 'Monachus',
     children: [
       /* {
         id: "organization",
@@ -240,29 +252,29 @@ export default [
         resource: "Monachus",
       }, */
       {
-        id: "rolesandpermission",
-        title: "Roles & Permission",
+        id: 'rolesandpermission',
+        title: 'Roles & Permission',
         icon: <Circle size={12} />,
-        navLink: "/monachus/rolesandpermission",
-        action: "manage",
-        resource: "Monachus",
+        navLink: '/monachus/rolesandpermission',
+        action: 'read',
+        resource: 'Monachus'
       },
       {
-        id: "users",
-        title: "Users",
+        id: 'users',
+        title: 'Users',
         icon: <Circle size={12} />,
-        navLink: "/monachus/users",
-        action: "manage",
-        resource: "Monachus",
-      },    
-      {
-        id: "templates",
-        title: "Templates",
-        icon: <Circle size={12} />,
-        navLink: "/monachus/templates",
-        action: "manage",
-        resource: "Monachus",
+        navLink: '/monachus/users',
+        action: 'manage',
+        resource: 'Monachus'
       },
+      {
+        id: 'templates',
+        title: 'Templates',
+        icon: <Circle size={12} />,
+        navLink: '/monachus/templates',
+        action: 'manage',
+        resource: 'Monachus'
+      }
       // {
       //   id: "profile",
       //   title: "Profile",
@@ -271,14 +283,14 @@ export default [
       //   action: "manage",
       //   resource: "Monachus",
       // },
-    ],
+    ]
   },
   {
-    id: "logs",
-    title: "Logs",
+    id: 'logs',
+    title: 'Logs',
     icon: <AlignLeft size={20} />,
-    navLink: "/monachus/logs",
-    action: "read",
-    resource: "ACL",
-  },
-];
+    navLink: '/monachus/logs',
+    action: 'read',
+    resource: 'ACL'
+  }
+]

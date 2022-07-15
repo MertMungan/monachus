@@ -96,10 +96,48 @@ export const createKeycloakClientRoles =
         })
     }
   }
+  export const updateKeycloakClientRoles =(roleDetails = [], keycloakRoleDetails = []) => async (dispatch, getState) => {
 
-export const deleteKeycloakClientRoles =
-  (selectedRole = []) =>
-  async (dispatch, getState) => {
+    const allClientofRealm = await getRealmClients()
+    let realmClients = allClientofRealm
+    let choosenClient = {}
+    const bearerToken = JSON.parse(localStorage.getItem('userAccessToken')).userAccessToken
+
+    const ClientName = JSON.parse(localStorage.getItem('userClientId')).userName
+    if (realmClients?.length > 0) {
+      choosenClient = realmClients.find(
+        (client) => client.clientId === ClientName
+      )
+
+  var data = JSON.stringify({
+    "id": keycloakRoleDetails.id,
+    "name": roleDetails.roleName,
+    "description": roleDetails.roleDescription,
+    "composite": false,
+    "clientRole": true,
+    "containerId": keycloakRoleDetails.containerId,
+    "attributes": {}
+  });
+  
+  var config = {
+    method: 'put',
+    url: `https://apps.belgesakla.com/auth/admin/realms/Monachus/clients/${choosenClient.id}/roles/${roleDetails.roleName}`,
+    headers: { 
+      'Content-Type': 'application/json', 
+      Authorization: `Bearer ${bearerToken}`
+    },
+    data : data
+  };
+  axios(config)
+.then(function (response) {
+  dispatch(fetchKeycloakClientRoles())
+})
+.catch(function (error) {
+  console.log(error);
+});
+  }}
+
+export const deleteKeycloakClientRoles =(selectedRole = []) => async (dispatch, getState) => {
     const allClientofRealm = await getRealmClients()
     let realmClients = allClientofRealm
     let choosenClient = {}

@@ -4,10 +4,11 @@ import { Col, Form, Button, Table } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
+import {createMonachusRole,updateMonachusRole} from "../../../../redux/actions/monachusRoles"
 // REDUX
 
 function RoleSecondStep(props) {
-  const { stepper, setRoleSecondStep, setWizardOpen,resetDashboard,resetCep,resetDataFlow,resetSettings } = props;
+  const { stepper, setRoleSecondStep, setWizardOpen,resetDashboard,resetCep,resetDataFlow,resetSettings, createMonachusRole, monachusRole,roleInfo,updateMonachusRole } = props;
   const {
     register,
     reset,
@@ -17,12 +18,20 @@ function RoleSecondStep(props) {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const RolePermissionData = JSON.parse(localStorage.getItem('monachusRoleData'))
+
   const onSubmit = (data) => {
+    const filteredPermissions = RolePermissionData?.find(item => item.roleName ===  roleInfo.roleName)
+    if (filteredPermissions) {
+      updateMonachusRole(roleInfo,data)
+    } else {
+      createMonachusRole(roleInfo,data)
+    }
     setRoleSecondStep(data);
     reset();
     setWizardOpen(false);
   };
-
 
   useEffect(() => {
     if (resetDashboard !== bool && resetCep !== bool && resetDataFlow !== bool && resetSettings !== bool) {
@@ -182,10 +191,14 @@ RoleSecondStep.propTypes = {
   resetCep: PropTypes.bool,
   resetDataFlow: PropTypes.bool,
   resetSetting: PropTypes.bool,
+  monachusRoles: PropTypes.array,
+  createMonachusRole: PropTypes.func,
+  roleInfo:PropTypes.array,
+  updateMonachusRole: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
-  return {};
+  return {monachusRoles: state.monachusRoleReducer};
 };
 
-export default connect(mapStateToProps, {})(RoleSecondStep);
+export default connect(mapStateToProps, {createMonachusRole,updateMonachusRole})(RoleSecondStep);

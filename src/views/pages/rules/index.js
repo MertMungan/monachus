@@ -1,32 +1,9 @@
 // ** React Imports
 import React, { Fragment, useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import illustration from "@src/assets/images/illustration/faq-illustrations.svg";
 import BreadCrumbs from "@components/breadcrumbs";
 import Wizard from "@components/wizard";
 // REACTSTRAP
-import {
-  Row,
-  Col,
-  Card,
-  Button,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Breadcrumb,
-  BreadcrumbItem,
-  CardText,
-  CardLink,
-  CardHeader,
-  UncontrolledDropdown,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-} from "reactstrap";
-import AvatarGroup from "@components/avatar-group";
-import QueryBuilder from "../../dashboard/querybuilder";
-import Chart from "react-apexcharts";
+
 import { fetchEvents } from "../../../redux/actions/events";
 import {
   fetchRule,
@@ -37,7 +14,7 @@ import {
 // ** Roles Components
 import classnames from "classnames";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { X, MoreVertical, Circle, Copy, Info } from "react-feather";
+import { X } from "react-feather";
 
 import Table from "./Table";
 import { connect } from "react-redux";

@@ -65,9 +65,6 @@ const tokenLogger = (tokens) => {
 
 ReactDOM.render(
   <ReactKeycloakProvider
-    onTokenExpired={(t) => {
-      console.log('onTokenExpired', t)
-    }}
     authClient={keycloak}
     onEvent={eventLogger}
     onTokens={tokenLogger}

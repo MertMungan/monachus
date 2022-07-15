@@ -185,7 +185,7 @@ const Table = ({
       name: "Applied Event",
       selector: (row) =>
         eventList.length > 0 &&
-        eventList.find((item) => item.eventId === row.eventID).eventName,
+        eventList.find((item) => item.eventId === row.eventID)?.eventName,
       sortable: true,
     },
     {
