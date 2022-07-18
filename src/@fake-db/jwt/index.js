@@ -26,7 +26,7 @@ const data = {
       password: "client",
       avatar: require("@src/assets/images/avatars/1-small.png").default,
       email: "client@demo.com",
-      role: "client",
+      role: "admin",
       ability: [
         {
           action: "read",

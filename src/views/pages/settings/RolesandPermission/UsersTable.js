@@ -16,6 +16,8 @@ import {
   Label,
   Row,
   Col,
+  Badge,
+
 } from "reactstrap";
 // REDUX
 import { connect } from "react-redux";
@@ -91,12 +93,36 @@ const UsersTable = ({
   const columns = [
     {
       name: "Name",
-      selector: (row) => row.name,
+      selector: (row) => row.roleName,
       sortable: true,
     },
     {
       name: "Description",
-      selector: (row) => row.description,
+      selector: (row) => row.roleDescription,
+      sortable: true,
+    },
+    {
+      name: "Assigned To",
+      minWidth: "auto",
+      selector: (row) => {
+        if (row) {
+          const permissions = row.rolePermissions;
+          const entries = Object.entries(permissions);
+          const filteredEntries = entries.filter((entry) => entry[1] === true);
+          const filteredKeys = filteredEntries.map((entry) => entry[0]);
+          const filteredKeysWithoutCRUD = filteredKeys.map((key) => {
+            const newKey = key.replace("CRUD", "");
+            return newKey;
+          });
+          return filteredKeysWithoutCRUD.map((key) => {
+            return (
+              <Badge pill className="text-capitalize">
+                {key}
+              </Badge>
+            );
+          });
+        }
+      },
       sortable: true,
     },
     {

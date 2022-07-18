@@ -8,7 +8,7 @@ import {createMonachusRole,updateMonachusRole} from "../../../../redux/actions/m
 // REDUX
 
 function RoleSecondStep(props) {
-  const { stepper, setRoleSecondStep, setWizardOpen,resetDashboard,resetCep,resetDataFlow,resetSettings, createMonachusRole, monachusRole,roleInfo,updateMonachusRole } = props;
+  const { stepper, setRoleSecondStep, setWizardOpen,resetDashboard,resetCep,resetcepConfiguration,resetDataFlow,resetSettings, createMonachusRole, monachusRole,roleInfo,updateMonachusRole } = props;
   const {
     register,
     reset,
@@ -34,10 +34,11 @@ function RoleSecondStep(props) {
   };
 
   useEffect(() => {
-    if (resetDashboard !== bool && resetCep !== bool && resetDataFlow !== bool && resetSettings !== bool) {
+    if (resetDashboard !== bool && resetCep !== bool && resetcepConfiguration !== bool && resetDataFlow !== bool && resetSettings !== bool) {
       reset({
         dashboardsCRUD: resetDashboard,
-        cepCRUD: resetCep,
+        cep: resetCep,
+        cepConfiguration: resetcepConfiguration,
         dataFlowCRUD: resetDataFlow,
         settingsCRUD: resetSettings,
       });
@@ -82,14 +83,34 @@ function RoleSecondStep(props) {
                   <input
                     type="checkbox"
                     className="custom-control-input"
-                    name="cepCRUD"
-                    id="cepCRUD"
+                    name="cep"
+                    id="cep"
                     data-toggle="toggle"
                     ref={register({})}
                   />
                   <label
                     className="custom-control-label"
-                    htmlFor="cepCRUD"
+                    htmlFor="cep"
+                  ></label>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td className="text-start">CEP Configuration</td>
+              <td>
+                <div className="custom-control custom-switch">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    name="cepConfiguration"
+                    id="cepConfiguration"
+                    data-toggle="toggle"
+                    ref={register({})}
+                  />
+                  <label
+                    className="custom-control-label"
+                    htmlFor="cepConfiguration"
                   ></label>
                 </div>
               </td>

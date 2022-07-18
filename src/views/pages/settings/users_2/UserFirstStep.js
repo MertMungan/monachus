@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Label, Row, Col, Form, Button } from "reactstrap";
 import Select from "react-select";
 import { selectThemeColors } from "@utils";
+import { toast } from "react-toastify";
 
 // REDUX
 import { connect } from "react-redux";
@@ -45,27 +46,31 @@ function UserFirstStep(props) {
   }, []);
 
   const onSubmit = (data) => {
-    if (resetInfo?.user?.id) {
-      let newRoles = roles.reduce((acc, curr) => {
-        acc.push(curr.value);
-        return acc;
-      }, []);
-      data = { ...data, roles: newRoles };
-      console.log("data", data);
-      updateKeycloakUser(resetInfo?.user?.id, data);
-      reset();
-      setWizardOpen(false);
-    } else {
-      console.log("data", data);
-      // i just need role's value here
-      let newRoles = roles.reduce((acc, curr) => {
-        acc.push(curr.value);
-        return acc;
-      }, []);
+    if (roles?.length > 0) {
+      if (resetInfo?.user?.id) {
+        let newRoles = roles.reduce((acc, curr) => {
+          acc.push(curr.value);
+          return acc;
+        }, []);
+        data = { ...data, roles: newRoles };
+        console.log("data", data);
+        updateKeycloakUser(resetInfo?.user?.id, data);
+        reset();
+        setWizardOpen(false);
+      } else {
+        console.log("data", data);
+        // i just need role's value here
+        let newRoles = roles?.reduce((acc, curr) => {
+          acc.push(curr.value);
+          return acc;
+        }, []);
 
-      createKeycloakUser(data, newRoles);
-      reset();
-      setWizardOpen(false);
+        createKeycloakUser(data, newRoles);
+        reset();
+        setWizardOpen(false);
+      }
+    } else {
+      toast.warn("Please Choose a User Role");
     }
   };
 
@@ -171,7 +176,7 @@ function UserFirstStep(props) {
               className="form-control mb-1"
               name={`userPassword`}
               id={`userContact-${type}`}
-              ref={register({ required: true })}
+              ref={register({})}
             />
           </Col>
         </Row>

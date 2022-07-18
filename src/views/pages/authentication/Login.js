@@ -1,8 +1,6 @@
 /* eslint-disable */
-import React, { useRef, useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Link, useHistory, Redirect, useLocation } from 'react-router-dom'
-import InputPasswordToggle from '@components/input-password-toggle'
-import { useSkin } from '@hooks/useSkin'
 import image from '../../../img/monachus2.png'
 import {
   Row,
@@ -12,7 +10,6 @@ import {
   Form,
   FormGroup,
   Label,
-  Input,
   CustomInput,
   Button
 } from 'reactstrap'
@@ -38,7 +35,7 @@ const Login = () => {
         JSON.stringify({
           username: keycloak.profile.firstName,
           userLastName: keycloak.profile.lastName,
-          role: 'client',
+          role: 'admin',
           ability: [
             {
               action: 'create',
@@ -83,7 +80,7 @@ const Login = () => {
         JSON.stringify({
           username: keycloak.profile.firstName,
           userLastName: keycloak.profile.lastName,
-          role: 'user',
+          role: 'admin',
           ability: [
             {
               action: 'read',
@@ -109,31 +106,28 @@ const Login = () => {
         JSON.stringify({ userName: keycloak.clientId })
       )
     }
-    history.push('/monachus/rulebuilder')
+    history.push('/monachus/analytics')
     // window.location.reload(true);
   }
 
   const location = useLocation()
 
   const currentLocationState = location.state || {
-    from: { pathname: '/monachus/rulebuilder' }
+    from: { pathname: '/monachus/analytics' }
   }
 
   const login = useCallback(() => {
     keycloak?.login()
   }, [keycloak])
 
-  if (keycloak?.authenticated) {
-    getLogin()
+  // if (keycloak?.authenticated) {
+  //   getLogin()
 
-    if (localStorage.getItem('userData')) {
-      return <Redirect to={currentLocationState} />
-    }
-  }
-
-  // const handleLogin = (e) => {
-  //   e.preventDefault()
+  //   if (localStorage.getItem('userData')) {
+  //     return <Redirect to={currentLocationState} />
   //   }
+  // }
+
 
   const handleLogout = (e) => {
     e.preventDefault()
@@ -163,7 +157,7 @@ const Login = () => {
         ]
       })
     )
-    history.push('/monachus/rulebuilder')
+    history.push('/monachus/analytics')
     // DAHA SONRA VUEXY LOGOSUNA BAS
   }
 

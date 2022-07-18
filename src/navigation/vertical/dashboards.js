@@ -35,14 +35,6 @@ export default [
         resource: 'ACL'
       },
       {
-        id: 'cube',
-        title: 'Cube',
-        icon: <Circle size={12} />,
-        navLink: '/monachus/cube',
-        action: ['create', 'read'],
-        resource: 'ACL'
-      },
-      {
         id: 'monitor',
         title: 'Event Monitor',
         icon: <Circle size={12} />,
@@ -108,7 +100,15 @@ export default [
         navLink: '/monachus/alerts',
         action: 'manage',
         resource: 'Monachus'
-      }
+      },
+      {
+        id: 'cube',
+        title: 'CEP Analytics',
+        icon: <Circle size={12} />,
+        navLink: '/monachus/cube',
+        action: ['create', 'read'],
+        resource: 'ACL'
+      },
     ]
   },
   /*   {

@@ -219,7 +219,6 @@ const Table = ({
     label: "Select Status",
     number: 0,
   });
-  console.log("queryList",queryList)
 
   const [stepper, setStepper] = useState(null);
   const [wizardOpen, setWizardOpen] = useState(false);
@@ -234,8 +233,7 @@ const Table = ({
     },
     {
       name: "Event Name",
-      selector: (row) =>
-      eventList.length > 0 && eventList.find((e) => e.eventId === row.eventID)?.eventName,
+      selector: (row) => row.eventName,
       sortable: true,
     },
 
@@ -263,9 +261,9 @@ const Table = ({
             size={15}
             onClick={() => {
               setSelectedAlert(row);
-              setEventName(
-                eventList.find((e) => e.eventId === row.eventID).eventName
-              );
+              // setEventName(
+              //   eventList.find((e) => e.eventId === row.eventID).eventName
+              // );
               setWizardOpen(true)
             }}
           />
@@ -281,14 +279,14 @@ const Table = ({
   useEffect(() => {
     fetchEvents();
     fetchRule();
-  }, [sort, sortColumn, currentPage]);
+  }, [queryList]);
 
   useEffect(() => {
     if (queryList.data) {
       // console.log(queryList.data);
       setRules(queryList.data);
     }
-  }, [queryList]);
+  }, [queryList.data]);
 
   useEffect(() => {
     if (selectedAlert !== null) {

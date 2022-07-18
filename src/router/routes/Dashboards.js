@@ -56,15 +56,6 @@ const DashboardRoutes = [
     }
   },
   {
-    path: '/monachus/cube',
-    component: lazy(() => import('../../views/cube/index')),
-    exact: true,
-    meta: {
-      action: 'read',
-      resource: 'ACL'
-    }
-  },
-  {
     path: '/monachus/explore',
     component: lazy(() => import('../../views/cube/explore')),
     exact: true,

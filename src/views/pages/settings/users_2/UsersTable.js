@@ -176,7 +176,7 @@ const UsersTable = ({
             <Trash
               size={15}
               onClick={() => {
-                handleKeycloakUserDelete(row.id);
+                deleteKeycloakUser(row.id)
               }}
             ></Trash>
           </>

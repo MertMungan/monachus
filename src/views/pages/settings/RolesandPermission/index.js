@@ -44,6 +44,7 @@ export const Roles = ({
       dataFlowCRUD: false,
     },
   });
+  const [tableData, setTableData] = useState([]);
 
   const handleRoleFirstStep = (name, desc) => {
     if (roleInfo.roleId) {
@@ -107,7 +108,8 @@ export const Roles = ({
           stepper={stepper}
           type="wizard-horizontal"
           resetDashboard={resetInfo?.rolePermissions?.dashboardsCRUD}
-          resetCep={resetInfo?.rolePermissions?.cepCRUD}
+          resetCep={resetInfo?.rolePermissions?.cep}
+          resetcepConfiguration={resetInfo?.rolePermissions?.cepConfiguration}
           resetDataFlow={resetInfo?.rolePermissions?.dataFlowCRUD}
           resetSettings={resetInfo?.rolePermissions?.settingsCRUD}
           setWizardOpen={setWizardOpen}
@@ -119,16 +121,17 @@ export const Roles = ({
   ];
 
   useEffect(() => {
-    /*     fetchRoles();
+    fetchRoles();
     fetchKeycloakRoles();
-    fetchKeycloakClientRoles(); */
+    fetchKeycloakClientRoles();
   }, []);
 
-  // console.log("keycloakRolesList",keycloakRolesList)
 
   useEffect(() => {
     if (rolesList.length > 0) {
       setTableRoles(rolesList);
+      // const data = []
+      // setTableData()
     }
   }, [rolesList]);
 
@@ -163,14 +166,14 @@ export const Roles = ({
         ) : (
           <>
             <UsersTable
-              listData={clientRoles}
+              listData={TableRoles}
               setWizardOpen={setWizardOpen}
               wizardOpen={wizardOpen}
               setResetInfo={setResetInfo}
               setReadOnly={setReadOnly}
             />
 
-            <UsersTableTwo listData={TableRoles} />
+            {/* <UsersTableTwo listData={TableRoles} /> */}
           </>
         )}
       </div>

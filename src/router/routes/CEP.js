@@ -64,7 +64,16 @@ const CEPRoutes = [
       action: 'manage',
       resource: 'Monachus'
     }
-  }
+  },
+  {
+    path: '/monachus/cube',
+    component: lazy(() => import('../../views/cube/index')),
+    exact: true,
+    meta: {
+      action: 'read',
+      resource: 'ACL'
+    }
+  },
 ]
 
 export default CEPRoutes
