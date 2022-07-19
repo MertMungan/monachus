@@ -4,6 +4,10 @@ import { Fragment, useState, useEffect, forwardRef } from "react";
 // ** Add New Modal Component
 import ReactPaginate from "react-paginate";
 
+import { useContext } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
+
+
 // ** Third Party Components
 import DataTable from "react-data-table-component";
 import { ChevronDown, Trash, Edit } from "react-feather";
@@ -22,6 +26,8 @@ import {
 // REDUX
 import { connect } from "react-redux";
 import { deleteKeycloakClientRoles } from "../../../../redux/actions/keycloakClientRoles";
+import { fetchRoles } from "../../../../redux/actions/roles";
+
 // REDUX
 
 // ** Styles
@@ -45,6 +51,8 @@ const UsersTable = ({
   deleteKeycloakClientRoles = () => { },
   appliedEvent = "",
   setReadOnly = () => { },
+  fetchRoles = () => {},
+  rolesList = [],
 }) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -54,8 +62,10 @@ const UsersTable = ({
   const [active, setActive] = useState("1");
   const [listedCategory, setListedCategory] = useState("");
   // STATES
+  const ability = useContext(AbilityContext);
 
   useEffect(() => {
+    // fetchRoles()
     if (listData) {
       setListBilgisi(listData);
     }
@@ -125,6 +135,7 @@ const UsersTable = ({
       },
       sortable: true,
     },
+    ability.can("create", "cep") &&
     {
       name: "Details",
       allowOverflow: true,
@@ -198,6 +209,7 @@ const UsersTable = ({
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">Role List</CardTitle>
+          {ability.can("create", "cep") &&
           <div className="d-flex mt-md-0 mt-1">
             {/*             <UncontrolledButtonDropdown>
               <DropdownToggle color="secondary" caret outline>
@@ -238,6 +250,7 @@ const UsersTable = ({
               <span className="align-middle ml-50">Create Role</span>
             </Button>
           </div>
+          }
         </CardHeader>
         <Row className="justify-content-end mx-0">
           <Col
@@ -274,9 +287,10 @@ const UsersTable = ({
   );
 };
 const mapStateToProps = (state) => {
-  return {};
+  return {  rolesList: state.rolesReducer,
+  };
 };
 
-export default connect(mapStateToProps, { deleteKeycloakClientRoles })(
+export default connect(mapStateToProps, { deleteKeycloakClientRoles,fetchRoles })(
   UsersTable
 );

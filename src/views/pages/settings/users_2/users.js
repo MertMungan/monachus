@@ -61,8 +61,6 @@ export const Users = ({
     /*     fetchKeycloakUsers(); */
   }, []);
 
-  console.log("keycloakToken", keycloakToken);
-
   const steps = [
     {
       id: "user-details",

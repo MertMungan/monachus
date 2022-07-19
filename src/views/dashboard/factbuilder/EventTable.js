@@ -1,32 +1,28 @@
 // ** React Imports
-import { Fragment, useState, useEffect, forwardRef } from "react";
+import { Fragment, useState, useEffect } from 'react'
 
 // ** Add New Modal Component
-import ReactPaginate from "react-paginate";
-import AddNewModal from "../../tables/data-tables/basic/AddNewModal";
+import ReactPaginate from 'react-paginate'
+import AddNewModal from '../../tables/data-tables/basic/AddNewModal'
+
+import { useContext } from 'react'
+import { AbilityContext } from '@src/utility/context/Can'
 
 // ** Third Party Components
-import DataTable from "react-data-table-component";
+import DataTable from 'react-data-table-component'
 import {
   ChevronDown,
-  Share,
-  Printer,
   FileText,
-  File,
-  Grid,
-  Copy,
-  Plus,
   MoreVertical,
   Archive,
   Trash,
-  Edit,
-} from "react-feather";
+  Edit
+} from 'react-feather'
 import {
   Card,
   CardHeader,
   CardTitle,
   Button,
-  UncontrolledButtonDropdown,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -34,18 +30,20 @@ import {
   Input,
   Label,
   Row,
-  ListGroup,
-  ListGroupItem,
-  Col,
-} from "reactstrap";
+  Col
+} from 'reactstrap'
 // REDUX
-import { connect } from "react-redux";
-import { fetchEvents, deleteEvents } from "../../../redux/actions/events/index";
+import { connect } from 'react-redux'
+import { fetchEvents, deleteEvents } from '../../../redux/actions/events/index'
 // REDUX
 
+// REALTIME LINE
+import RealTimeChart from './chart'
+// REALTIME LINE
+
 // ** Styles
-import "@styles/react/libs/react-select/_react-select.scss";
-import "@styles/react/libs/tables/react-dataTable-component.scss";
+import '@styles/react/libs/react-select/_react-select.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 const Table = ({
   listData = [],
@@ -53,103 +51,106 @@ const Table = ({
   setWizardOpen = () => {},
   setResetInfo = () => {},
   setSelectedEvent = () => {},
-  setShowFieldsTable = () => {},
+  setShowFieldsTable = () => {}
 }) => {
-  const [searchValue, setSearchValue] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
-  const [filteredData, setFilteredData] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [listBilgisi, setListBilgisi] = useState([]);
-  const handleModal = () => setModal(!modal);
+  const [searchValue, setSearchValue] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
+  const [filteredData, setFilteredData] = useState([])
+  const [modal, setModal] = useState(false)
+  const [listBilgisi, setListBilgisi] = useState([])
+  const handleModal = () => setModal(!modal)
+
+  const ability = useContext(AbilityContext)
 
   useEffect(() => {
     if (listData) {
-      setListBilgisi(listData);
+      setListBilgisi(listData)
     }
-  }, [listData]);
+  }, [listData])
 
   const handleFilter = (e) => {
-    const value = e.target.value;
-    let updatedData = [];
-    setSearchValue(value);
+    const value = e.target.value
+    let updatedData = []
+    setSearchValue(value)
 
     if (value.length) {
       updatedData = listBilgisi?.filter((item) => {
         const startsWith =
           item.eventId.toLowerCase().startsWith(value.toLowerCase()) ||
           item.eventName.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.eventDescription.toLowerCase().startsWith(value.toLowerCase());
+          item.eventDescription.toLowerCase().startsWith(value.toLowerCase())
 
         const includes =
           item.eventId.toLowerCase().includes(value.toLowerCase()) ||
           item.eventName.toLowerCase().includes(value.toLowerCase()) ||
-          item.eventDescription.toLowerCase().includes(value.toLowerCase());
+          item.eventDescription.toLowerCase().includes(value.toLowerCase())
 
         if (startsWith) {
-          return startsWith;
+          return startsWith
         } else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredData(updatedData);
-      setSearchValue(value);
+          return includes
+        } else return null
+      })
+      setFilteredData(updatedData)
+      setSearchValue(value)
     }
-  };
+  }
 
   const columns = [
     {
-      name: "ID",
+      name: 'ID',
       selector: (row) => row.eventId,
-      sortable: true,
+      sortable: true
     },
     {
-      name: "Name",
+      name: 'Name',
       selector: (row) => row.eventName,
-      sortable: true,
+      sortable: true
     },
     {
-      name: "Description",
+      name: 'Description',
       selector: (row) => row.eventDescription,
-      sortable: true,
+      sortable: true
     },
     // {
     //   name: "Status",
     //   selector: (row) => row.eventStatus,
     //   sortable: true,
     // },
-    {
-      name: "Actions",
+    ability.can('create', 'cep') && {
+      name: 'Actions',
       allowOverflow: true,
       cell: (row) => {
         return (
-          <div className="d-flex">
+          <div className='d-flex'>
             <UncontrolledDropdown>
-              <DropdownToggle className="pr-1" tag="span">
+              <DropdownToggle className='pr-1' tag='span'>
                 <MoreVertical size={15} />
               </DropdownToggle>
+
               <DropdownMenu right>
                 <DropdownItem
-                  tag="a"
-                  href="/"
-                  className="w-100"
+                  tag='a'
+                  href='/'
+                  className='w-100'
                   onClick={(e) => e.preventDefault()}
                 >
                   <FileText size={15} />
-                  <span className="align-middle ml-50">Details</span>
+                  <span className='align-middle ml-50'>Details</span>
                 </DropdownItem>
                 <DropdownItem
-                  tag="a"
-                  href="/"
-                  className="w-100"
+                  tag='a'
+                  href='/'
+                  className='w-100'
                   onClick={(e) => e.preventDefault()}
                 >
                   <Archive size={15} />
-                  <span className="align-middle ml-50">Archive</span>
+                  <span className='align-middle ml-50'>Archive</span>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
             <Trash
-              className="mr-1"
+              className='mr-1'
               size={15}
               onClick={deleteEvents(row.eventId)}
             />
@@ -159,23 +160,23 @@ const Table = ({
                 setResetInfo(row),
                   setSelectedEvent(row),
                   setWizardOpen(true),
-                  setShowFieldsTable(true);
+                  setShowFieldsTable(true)
               }}
             />
           </div>
-        );
-      },
-    },
-  ];
+        )
+      }
+    }
+  ]
 
   const handlePagination = (page) => {
-    setCurrentPage(page.selected);
-  };
+    setCurrentPage(page.selected)
+  }
 
   const CustomPagination = () => (
     <ReactPaginate
-      previousLabel=""
-      nextLabel=""
+      previousLabel=''
+      nextLabel=''
       forcePage={currentPage}
       onPageChange={(page) => handlePagination(page)}
       pageCount={
@@ -183,21 +184,21 @@ const Table = ({
           ? filteredData.length / 7
           : listBilgisi.length / 7 || 1
       }
-      breakLabel="..."
+      breakLabel='...'
       pageRangeDisplayed={2}
       marginPagesDisplayed={2}
-      activeClassName="active"
-      pageClassName="page-item"
-      breakClassName="page-item"
-      breakLinkClassName="page-link"
-      nextLinkClassName="page-link"
-      nextClassName="page-item next"
-      previousClassName="page-item prev"
-      previousLinkClassName="page-link"
-      pageLinkClassName="page-link"
-      containerClassName="pagination react-paginate separated-pagination pagination-sm justify-content-end pr-1 mt-1"
+      activeClassName='active'
+      pageClassName='page-item'
+      breakClassName='page-item'
+      breakLinkClassName='page-link'
+      nextLinkClassName='page-link'
+      nextClassName='page-item next'
+      previousClassName='page-item prev'
+      previousLinkClassName='page-link'
+      pageLinkClassName='page-link'
+      containerClassName='pagination react-paginate separated-pagination pagination-sm justify-content-end pr-1 mt-1'
     />
-  );
+  )
   // const BootstrapCheckbox = forwardRef(({ onClick, ...rest }, ref) => (
   //   <div className="custom-control custom-checkbox">
   //     <input
@@ -213,34 +214,41 @@ const Table = ({
   return (
     <Fragment>
       <Card>
-        <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">Event List</CardTitle>
-          <div className="d-flex mt-md-0 mt-1">
-            <Button
-              color="primary"
-              className="mr-0"
-              onClick={() => {
-                setWizardOpen(!wizardOpen);
-              }}
-            >
-              Create Event
-            </Button>
+        <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
+          <div>
+            <RealTimeChart />
           </div>
         </CardHeader>
-        <Row className="justify-content-end mx-0">
+        <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
+          <CardTitle tag='h4'>Event List</CardTitle>
+          <div className='d-flex mt-md-0 mt-1'>
+            {ability.can('create', 'cep') && (
+              <Button
+                color='primary'
+                className='mr-0'
+                onClick={() => {
+                  setWizardOpen(!wizardOpen)
+                }}
+              >
+                Create Event
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <Row className='justify-content-end mx-0'>
           <Col
-            className="d-flex align-items-center justify-content-end mt-1"
-            md="6"
-            sm="12"
+            className='d-flex align-items-center justify-content-end mt-1'
+            md='6'
+            sm='12'
           >
-            <Label className="mr-1" for="search-input">
+            <Label className='mr-1' for='search-input'>
               Search
             </Label>
             <Input
-              className="dataTable-filter mb-50"
-              type="text"
-              bsSize="sm"
-              id="search-input"
+              className='dataTable-filter mb-50'
+              type='text'
+              bsSize='sm'
+              id='search-input'
               value={searchValue}
               onChange={handleFilter}
             />
@@ -252,7 +260,7 @@ const Table = ({
           // selectableRows
           columns={columns}
           paginationPerPage={7}
-          className="react-dataTable"
+          className='react-dataTable'
           sortIcon={<ChevronDown size={10} />}
           paginationDefaultPage={currentPage + 1}
           paginationComponent={CustomPagination}
@@ -262,11 +270,11 @@ const Table = ({
       </Card>
       <AddNewModal open={modal} handleModal={handleModal} />
     </Fragment>
-  );
-};
+  )
+}
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields };
-};
+  return { eventList: state.fields }
+}
 
-export default connect(mapStateToProps, { fetchEvents, deleteEvents })(Table);
+export default connect(mapStateToProps, { fetchEvents, deleteEvents })(Table)

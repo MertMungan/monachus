@@ -44,8 +44,8 @@ const ExplorePage = withRouter(({ history, location }) => {
     return <Alert type='error' message={error.toString()} />
   }
 
-  console.log('finalVizState', finalVizState)
-  console.log('data', data)
+  // console.log('finalVizState', finalVizState)
+  // console.log('data', data)
 
   return (
     <div>

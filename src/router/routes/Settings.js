@@ -24,8 +24,8 @@ const Settings = [
     component: lazy(() => import("../../views/pages/settings/users_2/users")),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
+      action: "read",
+      resource: "settings",
     },
   },
   {
@@ -33,8 +33,8 @@ const Settings = [
     component: lazy(() => import("../../views/pages/settings/RolesandPermission")),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
+      action: "read",
+      resource: "settings",
     },
   },
   {
@@ -42,8 +42,8 @@ const Settings = [
     component: lazy(() => import("../../views/pages/misc/WIP")),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
+      action: "read",
+      resource: "settings",
     },
   },
   // {

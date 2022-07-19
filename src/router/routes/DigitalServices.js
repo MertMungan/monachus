@@ -7,7 +7,7 @@ const DigitalServices = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
   {
@@ -16,25 +16,25 @@ const DigitalServices = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
-  {
-    path: "/monachus/analytics",
-    component: lazy(() => import("../../views/dashboard/analytics")),
-    exact: true,
-    meta: {
-      action: "read",
-      resource: "ACL",
-    },
-  },
+  // {
+  //   path: "/monachus/analytics",
+  //   component: lazy(() => import("../../views/dashboard/analytics")),
+  //   exact: true,
+  //   meta: {
+  //     action: "read",
+  //     resource: "ACL",
+  //   },
+  // },
   {
     path: "/monachus/search",
     component: lazy(() => import("../../views/pages/search/index")),
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
   {
@@ -43,7 +43,7 @@ const DigitalServices = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
   {
@@ -52,7 +52,7 @@ const DigitalServices = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
   {
@@ -61,7 +61,7 @@ const DigitalServices = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
   {
@@ -70,7 +70,7 @@ const DigitalServices = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "digitalServices",
     },
   },
 ];

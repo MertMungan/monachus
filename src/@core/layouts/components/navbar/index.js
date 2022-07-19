@@ -46,7 +46,8 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if (!keycloak?.authenticated && !keycloak.refreshToken) {
-      keycloak.login();
+    // KEYCLOAK LOGİN REFRESHTEN SONRA LOOP A SOKUYOR PROGRAMI BURADA
+    //   keycloak.login();
     } else if (!keycloak?.authenticated && keycloak.refreshToken) {
       keycloak.updateToken();
     }
@@ -54,12 +55,10 @@ const ThemeNavbar = (props) => {
     if (keycloak?.authenticated) {
       const loadUserInfo = async () => {
         const userInfo = await keycloak.loadUserInfo();
-        console.log("loadUserInfo", userInfo);
       };
 
       const loadUserProfile = async () => {
         const userProfile = await keycloak.loadUserProfile();
-        console.log("loadUserProfile", userProfile);
       };
 
       loadUserInfo();
@@ -72,8 +71,6 @@ const ThemeNavbar = (props) => {
     fetchKeycloakUsers();
     fetchKeycloakUsersClientRoles();
   }, []);
-
-  console.log("keycloak", keycloak);
 
   // ** Function to toggle Theme (Light/Dark)
   const ThemeToggler = () => {

@@ -21,6 +21,9 @@ import {
 // REDUX
 import { connect } from "react-redux";
 
+import { useContext } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
+
 // REDUX
 import { fetchUsers } from "../../../../redux/actions/users";
 import {
@@ -64,6 +67,7 @@ const UsersTable = ({
   const [active, setActive] = useState("1");
   const [listedCategory, setListedCategory] = useState("");
   // STATES
+  const ability = useContext(AbilityContext);
 
   const colors = {
     Müdür: "light-info",
@@ -160,6 +164,7 @@ const UsersTable = ({
       selector: (row) => row.user.email,
       sortable: true,
     },
+    ability.can("create", "cep") &&
     {
       name: "Details",
       allowOverflow: true,
@@ -221,6 +226,7 @@ const UsersTable = ({
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">User List</CardTitle>
+          {ability.can("create", "cep") &&
           <div className="d-flex mt-md-0 mt-1">
             {/*             <UncontrolledButtonDropdown>
               <DropdownToggle color="secondary" caret outline>
@@ -261,6 +267,7 @@ const UsersTable = ({
               <span className="align-middle ml-50">Create User</span>
             </Button>
           </div>
+}
         </CardHeader>
         <Row className="justify-content-end mx-0">
           <Col

@@ -16,10 +16,10 @@ export const getUserWithClientRoles = () => async (dispatch, getState) => {
     };
     let userAllRoles = await axios(config);
     if (userAllRoles?.data?.clientMappings) {
-      console.log(
-        "userAllRoles.clientMappings",
-        userAllRoles?.data?.clientMappings["auth-monachus"]
-      );
+      // console.log(
+      //   "userAllRoles.clientMappings",
+      //   userAllRoles?.data?.clientMappings["auth-monachus"]
+      // );
       usersWithClientRoles.push({
         user: currentUsers[index],
         userRoles: userAllRoles?.data?.clientMappings["auth-monachus"],
@@ -111,7 +111,6 @@ export const fetchKeycloakUsersClientRoles =
   };
 
 export const fetchKeycloakUsersByMail = async (keycloakUserMail = "") => {
-  debugger;
   const bearerToken = JSON.parse(
     localStorage.getItem("userAccessToken")
   ).userAccessToken;
@@ -121,7 +120,7 @@ export const fetchKeycloakUsersByMail = async (keycloakUserMail = "") => {
     url: "https://apps.belgesakla.com/auth/admin/realms/Monachus/users",
     Authorization: `Bearer ${bearerToken}`,
   };
-  console.log("config: ", config);
+  // console.log("config: ", config);
 
   const getCreatedUserData = await axios(config);
   if (getCreatedUserData) {
@@ -146,7 +145,7 @@ export const deleteKeycloakUser =
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        // console.log(JSON.stringify(response.data));
         dispatch(fetchKeycloakUsers());
       })
       .catch(function (error) {
@@ -174,7 +173,7 @@ export const addClientRoleToUser =
 
     const isRolesAdded = await axios(config);
     if (isRolesAdded) {
-      console.log("isRolesAdded: ", isRolesAdded);
+      // console.log("isRolesAdded: ", isRolesAdded);
       dispatch(fetchKeycloakUsers());
     }
   };
@@ -324,12 +323,12 @@ export const updateKeycloakUser =
               .length;
             minedx++
           ) {
-            console.log(
-              "keycloakUserData?.roles[index]: ",
-              userAllRoles?.data?.clientMappings["auth-monachus"]?.mappings[
-                minedx
-              ]
-            );
+            // console.log(
+            //   "keycloakUserData?.roles[index]: ",
+            //   userAllRoles?.data?.clientMappings["auth-monachus"]?.mappings[
+            //     minedx
+            //   ]
+            // );
             if (
               userAllRoles?.data?.clientMappings["auth-monachus"]?.mappings[
                 minedx
@@ -352,7 +351,7 @@ export const updateKeycloakUser =
                 ],
               };
               let deleted = await axios(config);
-              console.log(deleted);
+              // console.log(deleted);
               if (deleted) {
                 const userClient = localStorage.getItem("ClientName_Id");
                 // then add userAllRoles?.data?.clientMappings["auth-monachus"]?.mappings[minedx]
@@ -369,7 +368,7 @@ export const updateKeycloakUser =
                   ],
                 };
                 let added = await axios(config);
-                console.log(added);
+                // console.log(added);
                 if (added) {
                   dispatch(fetchKeycloakUsers());
                 }
@@ -409,7 +408,7 @@ export const updateKeycloakUser =
                 ],
               };
               let deleted = await axios(config);
-              console.log(deleted);
+              // console.log(deleted);
               if (deleted) {
                 var config = {
                   method: "post",
@@ -422,7 +421,7 @@ export const updateKeycloakUser =
                 };
 
                 let newAdded = await axios(config);
-                console.log("newAdded", newAdded);
+                // console.log("newAdded", newAdded);
 
                 if (newAdded) {
                   dispatch(fetchKeycloakUsers());

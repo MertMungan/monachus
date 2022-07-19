@@ -23,7 +23,7 @@ export default [
     icon: <Home size={20} />,
     //  badge: 'light-warning',
     action: 'read',
-    resource: 'ACL',
+    resource: 'dashboard',
     badgeText: '',
     children: [
       {
@@ -32,15 +32,15 @@ export default [
         icon: <Circle size={12} />,
         navLink: '/monachus/analytics',
         action: 'read',
-        resource: 'ACL'
+        resource: 'dashboard'
       },
       {
         id: 'monitor',
         title: 'Event Monitor',
         icon: <Circle size={12} />,
         navLink: '/monachus/monitor',
-        action: ['create', 'read'],
-        resource: 'ACL'
+        action: 'read',
+        resource: 'dashboard'
       }
     ]
   },
@@ -49,24 +49,24 @@ export default [
     title: 'CEP',
     icon: <Activity size={20} />,
     badgeText: '',
-    action: 'manage',
-    resource: 'ACL',
+    action: 'read',
+    resource: 'cep',
     children: [
       {
         id: 'eventBuilder',
         title: 'Events',
         icon: <Circle size={12} />,
         navLink: '/monachus/eventbuilder',
-        action: 'manage',
-        resource: 'ACL'
+        action: 'read',
+        resource: 'cep'
       },
       {
         id: 'ruleCategories',
         title: 'Rule Categories',
         icon: <Codesandbox size={12} />,
         navLink: '/monachus/rulecategories',
-        action: 'manage',
-        resource: 'Monachus'
+        action: 'read',
+        resource: 'cep'
       },
       // {
       //   id: "QueryBuilder",
@@ -81,8 +81,8 @@ export default [
         title: 'Rules',
         icon: <Circle size={12} />,
         navLink: '/monachus/rules',
-        action: 'manage',
-        resource: 'ACL'
+        action: 'read',
+        resource: 'cep'
       },
 
       // {
@@ -98,21 +98,21 @@ export default [
         title: 'Alerts',
         icon: <Circle size={12} />,
         navLink: '/monachus/alerts',
-        action: 'manage',
-        resource: 'Monachus'
+        action: 'read',
+        resource: 'cep'
       },
       {
         id: 'cube',
         title: 'CEP Analytics',
         icon: <Circle size={12} />,
         navLink: '/monachus/cube',
-        action: ['create', 'read'],
-        resource: 'ACL'
+        action: ['read'],
+        resource: 'cep'
       },
     ]
   },
   /*   {
-    id: "digitalservices",
+    id: "digitalServices",
     title: "Digital Services",
     icon: <Cloud size={20} />,
     badgeText: "",
@@ -123,7 +123,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/monachus/search",
         action: "read",
-        resource: "ACL",
+        resource: "digitalServices",
       },
       {
         id: "recommendation",
@@ -131,7 +131,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/monachus/recommendation",
         action: "read",
-        resource: "ACL",
+        resource: "digitalServices",
       },
       {
         id: "collections",
@@ -139,7 +139,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/monachus/collections",
         action: "read",
-        resource: "ACL",
+        resource: "digitalServices",
       },
       {
         id: "notifications",
@@ -147,7 +147,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/monachus/notifications",
         action: "read",
-        resource: "ACL",
+        resource: "digitalServices",
       },
       {
         id: "studio",
@@ -155,7 +155,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: "/monachus/studio",
         action: "read",
-        resource: "ACL",
+        resource: "digitalServices",
       },
       // {
       //   id: "analytics",
@@ -172,7 +172,7 @@ export default [
       //   icon: <Circle size={12} />,
       //   navLink: "/monachus/location",
       //   action: "read",
-      //   resource: "ACL",
+      //   resource: "digitalServices",
       // },
       // {
       //   id: "commerce",
@@ -180,7 +180,7 @@ export default [
       //   icon: <Circle size={12} />,
       //   navLink: "/monachus/commerce",
       //   action: "read",
-      //   resource: "ACL",
+      //   resource: "digitalServices",
       // },
     ],
   }, */
@@ -191,7 +191,7 @@ export default [
     //  badge: 'light-warning',
     badgeText: '',
     action: 'read',
-    resource: 'Post',
+    resource: 'dataFlow',
     children: [
       {
         id: 'connectors',
@@ -199,7 +199,7 @@ export default [
         icon: <Codesandbox size={12} />,
         navLink: '/monachus/connectors',
         action: 'read',
-        resource: 'Post'
+        resource: 'dataFlow'
       },
       // {
       //   id: "cms",
@@ -215,7 +215,7 @@ export default [
         icon: <Circle size={12} />,
         navLink: '/monachus/integrations',
         action: 'read',
-        resource: 'Post'
+        resource: 'dataFlow'
       }
       // {
       //   id: "intelligence",
@@ -232,8 +232,8 @@ export default [
     title: 'Settings',
     icon: <Settings size={20} />,
     badgeText: '',
-    action: 'manage',
-    resource: 'Monachus',
+    action: 'read',
+    resource: 'settings',
     children: [
       /* {
         id: "organization",
@@ -257,23 +257,23 @@ export default [
         icon: <Circle size={12} />,
         navLink: '/monachus/rolesandpermission',
         action: 'read',
-        resource: 'Monachus'
+        resource: 'settings'
       },
       {
         id: 'users',
         title: 'Users',
         icon: <Circle size={12} />,
         navLink: '/monachus/users',
-        action: 'manage',
-        resource: 'Monachus'
+        action: 'read',
+        resource: 'settings'
       },
       {
         id: 'templates',
         title: 'Templates',
         icon: <Circle size={12} />,
         navLink: '/monachus/templates',
-        action: 'manage',
-        resource: 'Monachus'
+        action: 'read',
+        resource: 'settings'
       }
       // {
       //   id: "profile",
@@ -291,6 +291,6 @@ export default [
     icon: <AlignLeft size={20} />,
     navLink: '/monachus/logs',
     action: 'read',
-    resource: 'ACL'
+    resource: 'logs'
   }
 ]

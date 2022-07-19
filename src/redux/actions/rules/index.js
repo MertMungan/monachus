@@ -12,6 +12,7 @@ const instance = axios.create({
   baseURL: process.env.REACT_APP_DEST
 })
 
+// FETCHRULE FONKSİYONU LOCAL'DEN EVENT ID ALIYOR KULLANILMASI MANTIKLI DEĞİL. fetchAllRules VEYA fetchRuleById'i KULLAN
 export const fetchRule = () => async (dispatch) => {
   const localTreeValues = await instance.get(
     `/rules/list`,

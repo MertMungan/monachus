@@ -5,7 +5,7 @@ import { Fragment, useState, useEffect, useRef } from "react";
 import Sidebar from "./Sidebar";
 
 import { fetchEvents } from "../../../../redux/actions/events";
-import { fetchRule } from "../../../../redux/actions/rules";
+import { fetchAllRules } from "../../../../redux/actions/rules";
 import { connect } from "react-redux";
 import "../../../../formControlColor.css";
 
@@ -39,6 +39,9 @@ import {
 
 // ** Utils
 import { selectThemeColors } from "@utils";
+
+import { useContext } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
 
 // ** Reactstrap Imports
 import {
@@ -194,7 +197,7 @@ const Table = ({
   eventList = [],
   fetchEvents = () => { },
   queryList = [],
-  fetchRule = () => { },
+  fetchAllRules = () => { },
 }) => {
   // ** Store Vars
   const store = useSelector((state) => state.users);
@@ -220,6 +223,8 @@ const Table = ({
     number: 0,
   });
 
+  const ability = useContext(AbilityContext);
+
   const [stepper, setStepper] = useState(null);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [rules, setRules] = useState([]);
@@ -233,7 +238,9 @@ const Table = ({
     },
     {
       name: "Event Name",
-      selector: (row) => row.eventName,
+      selector: (row) =>
+        eventList.length > 0 &&
+        eventList.find((item) => item.eventId === row.eventID)?.eventName,
       sortable: true,
     },
 
@@ -252,6 +259,7 @@ const Table = ({
       selector: (row) => row.category,
       sortable: true,
     },
+    ability.can("create", "cep") &&
     {
       name: "Actions",
       minWidth: "100px",
@@ -278,7 +286,7 @@ const Table = ({
   // ** Get data on mount
   useEffect(() => {
     fetchEvents();
-    fetchRule();
+    fetchAllRules();
   }, [queryList]);
 
   useEffect(() => {
@@ -286,7 +294,7 @@ const Table = ({
       // console.log(queryList.data);
       setRules(queryList.data);
     }
-  }, [queryList.data]);
+  }, []);
 
   useEffect(() => {
     if (selectedAlert !== null) {
@@ -546,5 +554,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   fetchEvents,
-  fetchRule,
+  fetchAllRules,
 })(Table);

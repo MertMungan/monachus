@@ -6,8 +6,8 @@ const Applications = [
     component: lazy(() => import("../../views/pages/actions")),
     exact: true,
     meta: {
-      action: "manage",
-      resource: "Monachus",
+      action: "read",
+      resource: "dataFlow",
       menuCollapsed: true,
     },
   },
@@ -27,7 +27,7 @@ const Applications = [
     exact: true,
     meta: {
       action: "read",
-      resource: "ACL",
+      resource: "dataFlow",
     },
   },
   {

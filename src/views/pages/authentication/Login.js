@@ -35,23 +35,11 @@ const Login = () => {
         JSON.stringify({
           username: keycloak.profile.firstName,
           userLastName: keycloak.profile.lastName,
-          role: 'admin',
+          role: 'client',
           ability: [
             {
-              action: 'create',
-              subject: 'ACL'
-            },
-            {
-              action: ['create', 'read'],
-              subject: 'ACL'
-            },
-            {
-              action: 'manage',
-              subject: 'all'
-            },
-            {
               action: 'read',
-              subject: 'ACL'
+              subject: ['dashboard','cep', 'settings','dataFlow',"logs"]
             }
           ]
         })

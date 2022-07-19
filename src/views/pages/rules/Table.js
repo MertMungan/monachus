@@ -7,6 +7,9 @@ import AddNewModal from "../../tables/data-tables/basic/AddNewModal";
 import classnames from "classnames";
 import { useForm } from "react-hook-form";
 
+import { useContext } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
+
 // ** Third Party Components
 import DataTable from "react-data-table-component";
 import {
@@ -72,6 +75,8 @@ const Table = ({
   const [listedCategory, setListedCategory] = useState("");
   // STATES
 
+  const ability = useContext(AbilityContext);
+
   const {
     register,
     handleSubmit,
@@ -99,9 +104,9 @@ const Table = ({
     setListBilgisi(queryList.data);
   }, [queryList]);
 
-  useEffect(() => {
-    setListBilgisi(listData);
-  }, [listData]);
+  // useEffect(() => {
+  //   setListBilgisi(listData);
+  // }, [listData]);
 
   const ExpandableTable = ({ data }) => {
     // console.log("expandableTable data", data);
@@ -144,29 +149,6 @@ const Table = ({
 
   const columns = [
     {
-      name: "Status",
-      allowOverflow: true,
-      maxWidth: "35px",
-      cell: (row) => {
-        return (
-          <div className="custom-control custom-switch">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              name={row.eventID}
-              id={row.eventID}
-              data-toggle="toggle"
-              ref={register({})}
-            />
-            <label
-              className="custom-control-label"
-              htmlFor={row.eventID}
-            ></label>
-          </div>
-        );
-      },
-    },
-    {
       name: "ID",
       selector: (row) => row.id,
       sortable: true,
@@ -188,7 +170,7 @@ const Table = ({
         eventList.find((item) => item.eventId === row.eventID)?.eventName,
       sortable: true,
     },
-    {
+    ability.can("create", "cep") && {
       name: "Actions",
       allowOverflow: true,
       cell: (row) => {
@@ -247,6 +229,30 @@ const Table = ({
         );
       },
     },
+    ability.can("create", "cep") &&
+    {
+      name: "Status",
+      allowOverflow: true,
+      maxWidth: "35px",
+      cell: (row) => {
+        return (
+          <div className="custom-control custom-switch">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              name={row.eventID}
+              id={row.eventID}
+              data-toggle="toggle"
+              ref={register({})}
+            />
+            <label
+              className="custom-control-label"
+              htmlFor={row.eventID}
+            ></label>
+          </div>
+        );
+      },
+    },
   ];
 
   const handlePagination = (page) => {
@@ -285,25 +291,27 @@ const Table = ({
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">List of Rules</CardTitle>
-          <div className="d-flex mt-md-0 mt-1">
-            <Button
-              color="primary"
-              onClick={() => {
-                setResetInfo({
-                  ruleId: "",
-                  ruleName: "",
-                  ruleDescription: "",
-                  assignedEvent: "",
-                  assignedCategory: "",
-                  builderInfo: [],
-                  configuration: "",
-                });
-                setWizardOpen(!wizardOpen);
-              }}
-            >
-              Create Rule
-            </Button>
-          </div>
+          {ability.can("create", "cep") && 
+            <div className="d-flex mt-md-0 mt-1">
+              <Button
+                color="primary"
+                onClick={() => {
+                  setResetInfo({
+                    ruleId: "",
+                    ruleName: "",
+                    ruleDescription: "",
+                    assignedEvent: "",
+                    assignedCategory: "",
+                    builderInfo: [],
+                    configuration: "",
+                  });
+                  setWizardOpen(!wizardOpen);
+                }}
+              >
+                Create Rule
+              </Button>
+            </div>
+          }
         </CardHeader>
         <Row className="justify-content-end mx-0">
           <Col

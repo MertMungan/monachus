@@ -112,7 +112,6 @@ const TemplatesCard = ({
       (element) => element.code === selectedRows[0]?.code
     );
     if (selectedRows.length > 0) {
-      console.log("templateData", templateData[templateDataIndex]);
       reset({
         code: templateData[templateDataIndex]?.code,
         subject: templateData[templateDataIndex].formatting?.subject?.en,

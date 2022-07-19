@@ -40,7 +40,6 @@ function UserFirstStep(props) {
     formState: { errors },
   } = useForm();
 
-  console.log("resetInfo", resetInfo);
   useEffect(() => {
     /*     fetchKeycloakClientRoles(); */
   }, []);
@@ -53,12 +52,10 @@ function UserFirstStep(props) {
           return acc;
         }, []);
         data = { ...data, roles: newRoles };
-        console.log("data", data);
         updateKeycloakUser(resetInfo?.user?.id, data);
         reset();
         setWizardOpen(false);
       } else {
-        console.log("data", data);
         // i just need role's value here
         let newRoles = roles?.reduce((acc, curr) => {
           acc.push(curr.value);
@@ -96,7 +93,6 @@ function UserFirstStep(props) {
     SetRoles(roleOptions);
   }, [resetInfo]);
 
-  console.log("clientRoles", clientRoles);
 
   useEffect(() => {
     if (clientRoles.length > 0) {

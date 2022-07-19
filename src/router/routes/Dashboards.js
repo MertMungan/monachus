@@ -16,7 +16,7 @@ const DashboardRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'ACL'
+      resource: 'dashboard'
     }
   },
   {
@@ -25,7 +25,7 @@ const DashboardRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'ACL'
+      resource: 'dashboard'
     }
   },
   {
@@ -34,7 +34,7 @@ const DashboardRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'ACL'
+      resource: 'dashboard'
     }
   },
   {
@@ -43,7 +43,7 @@ const DashboardRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'ACL'
+      resource: 'dashboard'
     }
   },
   {
@@ -52,16 +52,7 @@ const DashboardRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'ACL'
-    }
-  },
-  {
-    path: '/monachus/explore',
-    component: lazy(() => import('../../views/cube/explore')),
-    exact: true,
-    meta: {
-      action: 'read',
-      resource: 'ACL'
+      resource: 'dashboard'
     }
   }
 ]

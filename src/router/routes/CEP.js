@@ -7,7 +7,7 @@ const CEPRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'Monachus'
+      resource: 'cep'
     }
   },
   {
@@ -15,8 +15,8 @@ const CEPRoutes = [
     component: lazy(() => import('../../views/pages/rules/index.js')),
     exact: true,
     meta: {
-      action: 'manage',
-      resource: 'Monachus'
+      action: 'read',
+      resource: 'cep'
     }
   },
   // {
@@ -34,8 +34,8 @@ const CEPRoutes = [
     component: lazy(() => import('../../views/pages/misc/WIP')),
     exact: true,
     meta: {
-      action: 'manage',
-      resource: 'Monachus'
+      action: 'read',
+      resource: 'cep'
     }
   },
   {
@@ -43,8 +43,8 @@ const CEPRoutes = [
     component: lazy(() => import('../../views/pages/ruleCategory')),
     exact: true,
     meta: {
-      action: 'manage',
-      resource: 'Monachus'
+      action: 'read',
+      resource: 'cep'
     }
   },
   {
@@ -52,17 +52,17 @@ const CEPRoutes = [
     component: lazy(() => import('../../views/dashboard/factbuilder')),
     exact: true,
     meta: {
-      action: 'manage',
-      resource: 'pato'
+      action: 'read',
+      resource: 'cep'
     }
   },
   {
     path: '/monachus/alerts',
-    component: lazy(() => import('../../views/pages/case-management')),
+    component: lazy(() => import('../../views/pages/alert')),
     exact: true,
     meta: {
-      action: 'manage',
-      resource: 'Monachus'
+      action: 'read',
+      resource: 'cep'
     }
   },
   {
@@ -71,9 +71,18 @@ const CEPRoutes = [
     exact: true,
     meta: {
       action: 'read',
-      resource: 'ACL'
+      resource: 'cep'
     }
   },
+  {
+    path: '/monachus/explore',
+    component: lazy(() => import('../../views/cube/explore')),
+    exact: true,
+    meta: {
+      action: 'read',
+      resource: 'cep'
+    }
+  }
 ]
 
 export default CEPRoutes

@@ -5,6 +5,9 @@ import { Fragment, useState, useEffect, forwardRef } from "react";
 import ReactPaginate from "react-paginate";
 import AddNewModal from "../../tables/data-tables/basic/AddNewModal";
 
+import { useContext } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
+
 // ** Third Party Components
 import DataTable from "react-data-table-component";
 import {
@@ -59,6 +62,8 @@ const Table = ({
   const [modal, setModal] = useState(false);
   const [listBilgisi, setListBilgisi] = useState([]);
   const handleModal = () => setModal(!modal);
+
+  const ability = useContext(AbilityContext);
 
   useEffect(() => {
     setListBilgisi(listData);
@@ -115,7 +120,7 @@ const Table = ({
     //   selector: (row) => row.eventStatus,
     //   sortable: true,
     // },
-    {
+    ability.can("create", "cep") && {
       name: "Actions",
       allowOverflow: true,
       cell: (row) => {
@@ -211,18 +216,20 @@ const Table = ({
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">Category List</CardTitle>
-          <div className="d-flex mt-md-0 mt-1">
-            <Button
-              color="primary"
-              className="mr-0"
-              onClick={() => {
-                setResetInfo({});
-                setWizardOpen(!wizardOpen);
-              }}
-            >
-              Create Category
-            </Button>
-          </div>
+          {ability.can("create", "cep") && (
+            <div className="d-flex mt-md-0 mt-1">
+              <Button
+                color="primary"
+                className="mr-0"
+                onClick={() => {
+                  setResetInfo({});
+                  setWizardOpen(!wizardOpen);
+                }}
+              >
+                Create Category
+              </Button>
+            </div>
+          )}
         </CardHeader>
         <Row className="justify-content-end mx-0">
           <Col

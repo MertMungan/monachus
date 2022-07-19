@@ -8,7 +8,7 @@ const Logs=[
         exact: true,
         meta: {
           action: 'read',
-          resource: 'ACL'
+          resource: 'logs'
         }
       },
 ]
