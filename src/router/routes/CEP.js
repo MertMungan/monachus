@@ -11,6 +11,15 @@ const CEPRoutes = [
     }
   },
   {
+    path: '/monachus/test',
+    component: lazy(() => import('../../views/pages/test/test')),
+    exact: true,
+    meta: {
+      action: 'read',
+      resource: 'dashboard'
+    }
+  },
+  {
     path: '/monachus/rules',
     component: lazy(() => import('../../views/pages/rules/index.js')),
     exact: true,

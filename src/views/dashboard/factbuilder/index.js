@@ -5,18 +5,14 @@ import Wizard from "@components/wizard";
 import FactsetName from "./steps/factsetName";
 import FactsetDescription from "./steps/factsetDescription";
 import AddFact from "./steps/addFacts";
-import { Link } from "react-router-dom";
 import BreadCrumbs from "@components/breadcrumbs";
 
 import {
   Card,
-  Row,
   CardBody,
   CardTitle,
   CardSubtitle,
   Button,
-  Breadcrumb,
-  BreadcrumbItem,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";

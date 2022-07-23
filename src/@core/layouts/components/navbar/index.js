@@ -1,30 +1,31 @@
 // ** React Imports
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from 'react'
 
 // ** Dropdowns Imports
-import IntlDropdown from "./IntlDropdown";
-import CartDropdown from "./CartDropdown";
-import UserDropdown from "./UserDropdown";
-import NotificationDropdown from "./NotificationDropdown";
+import IntlDropdown from './IntlDropdown'
+import CartDropdown from './CartDropdown'
+import UserDropdown from './UserDropdown'
+import NotificationDropdown from './NotificationDropdown'
 
 // ** Custom Components
-import NavbarBookmarks from "./NavbarBookmarks";
+import NavbarBookmarks from './NavbarBookmarks'
 
 // ** Third Party Components
-import { Sun, Moon } from "react-feather";
-import { NavItem, NavLink } from "reactstrap";
+import { Sun, Moon } from 'react-feather'
+import { NavItem, NavLink } from 'reactstrap'
 
 // KEYCLOACK
-import { useKeycloak } from "@react-keycloak/web";
+import { useKeycloak } from '@react-keycloak/web'
 
 // REDUX
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import {
   getUserWithClientRoles,
   fetchKeycloakUsers,
-  fetchKeycloakUsersClientRoles,
-} from "../../../../redux/actions/keycloakUsers";
+  fetchKeycloakUsersClientRoles
+} from '../../../../redux/actions/keycloakUsers'
+import { getUserAccount } from '../../../../redux/actions/userAccountInfo'
 
 const ThemeNavbar = (props) => {
   // ** Props
@@ -35,8 +36,11 @@ const ThemeNavbar = (props) => {
     getUserWithClientRoles,
     fetchKeycloakUsers,
     fetchKeycloakUsersClientRoles,
-  } = props;
-  const { keycloak, initialized } = useKeycloak();
+    getUserAccount
+  } = props
+  const { keycloak, initialized } = useKeycloak()
+  const [userData, setUserData] = useState([])
+  const [userProfile, setUserProfile] = useState([])
 
   // keycloak.loadUserInfo().then((item) => console.log('loadUserInfo', item))
   // keycloak
@@ -44,52 +48,96 @@ const ThemeNavbar = (props) => {
   //   .then((item) => console.log('loadUserProfile', item))
   // keycloak
 
+  const test = JSON.parse(
+    localStorage.getItem('userAccessToken')
+  )?.userAccessToken
+  const userRealm = JSON.parse(localStorage.getItem('userRealm'))?.userRealm
   useEffect(() => {
-    if (!keycloak?.authenticated && !keycloak.refreshToken) {
-    // KEYCLOAK LOGİN REFRESHTEN SONRA LOOP A SOKUYOR PROGRAMI BURADA
-    //   keycloak.login();
+    if (!test && !keycloak.refreshToken) {
+      // KEYCLOAK LOGİN REFRESHTEN SONRA LOOP A SOKUYOR PROGRAMI BURADA
+      keycloak.login()
     } else if (!keycloak?.authenticated && keycloak.refreshToken) {
-      keycloak.updateToken();
+      keycloak.updateToken()
     }
 
     if (keycloak?.authenticated) {
       const loadUserInfo = async () => {
-        const userInfo = await keycloak.loadUserInfo();
-      };
+        const userInfo = await keycloak.loadUserInfo()
+        setUserData(userInfo)
+      }
 
       const loadUserProfile = async () => {
-        const userProfile = await keycloak.loadUserProfile();
-      };
-
-      loadUserInfo();
-      loadUserProfile();
+        const userProfile = await keycloak.loadUserProfile()
+        setUserProfile(userProfile)
+      }
+      loadUserInfo()
+      loadUserProfile()
     }
-  }, [keycloak]);
+  }, [keycloak])
 
   useEffect(() => {
-    getUserWithClientRoles();
-    fetchKeycloakUsers();
-    fetchKeycloakUsersClientRoles();
-  }, []);
+    if (userRealm) {
+      getUserWithClientRoles()
+      fetchKeycloakUsers()
+      fetchKeycloakUsersClientRoles()
+      getUserAccount()
+    }
+  }, [userRealm])
+
+  useEffect(() => {
+    if (userData && userProfile) {
+      console.log(keycloak)
+      localStorage.setItem(
+        'userData',
+        JSON.stringify({
+          username: keycloak.profile?.firstName,
+          userLastName: keycloak.profile?.lastName,
+          role: 'client',
+          ability: [
+            {
+              action: 'manage',
+              subject: 'all'
+            }
+          ]
+        })
+      )
+      localStorage.setItem(
+        'userId',
+        JSON.stringify({ userId: keycloak.subject })
+      )
+      localStorage.setItem(
+        'userRealm',
+        JSON.stringify({ userRealm: keycloak.realm })
+      )
+      localStorage.setItem(
+        'userUserName',
+        JSON.stringify({ userName: keycloak.profile?.username })
+      )
+      localStorage.setItem(
+        'userClientId',
+        JSON.stringify({ userName: keycloak.clientId })
+      )
+    }
+  }, [userData, userProfile])
 
   // ** Function to toggle Theme (Light/Dark)
   const ThemeToggler = () => {
-    if (skin === "dark") {
-      return <Sun className="ficon" onClick={() => setSkin("light")} />;
+    if (skin === 'dark') {
+      return <Sun className='ficon' onClick={() => setSkin('light')} />
     } else {
-      return <Moon className="ficon" onClick={() => setSkin("dark")} />;
+      return <Moon className='ficon' onClick={() => setSkin('dark')} />
     }
-  };
+  }
 
   return (
     <Fragment>
-      <div className="bookmark-wrapper d-flex align-items-center">
+      <div className='bookmark-wrapper d-flex align-items-center'>
         <NavbarBookmarks setMenuVisibility={setMenuVisibility} />
       </div>
-      <ul className="nav navbar-nav align-items-center ml-auto">
+      <ul className='nav navbar-nav align-items-center ml-auto'>
         <IntlDropdown />
-        <NavItem className="d-none d-lg-block">
-          <NavLink className="nav-link-style">
+        <NavItem className='d-none d-lg-block'>
+          <NavLink className='nav-link-style'>
             <ThemeToggler />
           </NavLink>
         </NavItem>
@@ -99,8 +147,8 @@ const ThemeNavbar = (props) => {
         <UserDropdown />
       </ul>
     </Fragment>
-  );
-};
+  )
+}
 
 ThemeNavbar.propTypes = {
   skin: PropTypes.string,
@@ -111,11 +159,19 @@ ThemeNavbar.propTypes = {
   getUserWithClientRoles: PropTypes.func,
   fetchKeycloakUsers: PropTypes.func,
   fetchKeycloakUsersClientRoles: PropTypes.func,
-};
+  getUserAccount: PropTypes.func
+}
+
+const mapStateToProps = (state) => {
+  return {
+    userAccountData: state.userAccountReducer
+  }
+}
 
 export default connect(null, {
   getUserWithClientRoles,
   fetchKeycloakUsers,
   fetchKeycloakUsersClientRoles,
-})(ThemeNavbar);
+  getUserAccount
+})(ThemeNavbar)
 // export default ThemeNavbar

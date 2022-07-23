@@ -10,12 +10,16 @@ import TimeGroup from './TimeGroup'
 import SelectChartType from './SelectChartType'
 import OrderGroup from './Order/OrderGroup'
 import Pivot from './Pivot/Pivot'
+import { useSkin } from '@hooks/useSkin'
+
 export default function ExploreQueryBuilder({
   vizState,
   cubejsApi,
   chartExtra,
   onVizStateChanged
 }) {
+  const [skin, setSkin] = useSkin()
+
   return (
     <QueryBuilder
       initialVizState={vizState}
@@ -54,22 +58,34 @@ export default function ExploreQueryBuilder({
               align='top'
               gutter={24}
               style={{
-                marginBottom: 12,
-                backgroundColor: 'black !important'
+                marginBottom: 12
               }}
             >
               <Col span={24}>
-                <Card>
+                <Card
+                  style={{
+                    backgroundColor: skin === 'dark' ? '#161d31' : '#fff',
+                    border: 'none'
+                  }}
+                >
                   <Row
                     type='flex'
                     justify='space-around'
                     align='top'
                     gutter={24}
                     style={{
-                      marginBottom: 12
+                      marginBottom: 12,
+                      backgroundColor: skin === 'dark' ? '#161d31' : '#fff',
+                      border: 'none'
                     }}
                   >
-                    <Col span={24}>
+                    <Col
+                      span={24}
+                      style={{
+                        backgroundColor: skin === 'dark' ? '#161d31' : '#fff',
+                        border: 'none'
+                      }}
+                    >
                       <MemberGroup
                         members={measures}
                         availableMembers={availableMeasures}
@@ -185,7 +201,8 @@ export default function ExploreQueryBuilder({
                 {isQueryPresent ? (
                   <Card
                     style={{
-                      minHeight: 420
+                      minHeight: 420,
+                      backgroundColor: 'pink !important'
                     }}
                     extra={chartExtra}
                   >

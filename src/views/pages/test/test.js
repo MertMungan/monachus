@@ -16,7 +16,7 @@ import {
 import '@styles/base/pages/page-auth.scss'
 import { useKeycloak } from '@react-keycloak/web'
 
-const Login = () => {
+const test = () => {
   const [skin, setSkin] = useState()
   const [user, setUser] = useState(null)
   const history = useHistory()
@@ -248,5 +248,5 @@ const Login = () => {
   )
 }
 
-export default Login
+export default test
 /* eslint-disable */

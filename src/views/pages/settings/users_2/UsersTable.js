@@ -164,7 +164,7 @@ const UsersTable = ({
       selector: (row) => row.user.email,
       sortable: true,
     },
-    ability.can("create", "cep") &&
+    ability.can("create", "settings") &&
     {
       name: "Details",
       allowOverflow: true,
@@ -226,7 +226,7 @@ const UsersTable = ({
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
           <CardTitle tag="h4">User List</CardTitle>
-          {ability.can("create", "cep") &&
+          {ability.can("create", "settings") &&
           <div className="d-flex mt-md-0 mt-1">
             {/*             <UncontrolledButtonDropdown>
               <DropdownToggle color="secondary" caret outline>

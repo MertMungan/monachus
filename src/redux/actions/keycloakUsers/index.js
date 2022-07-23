@@ -83,7 +83,7 @@ export const fetchKeycloakUsersClientRoles =
 
     const ClientName = JSON.parse(
       localStorage.getItem("userClientId")
-    ).userName;
+    )?.userName;
     if (realmClients?.length > 0) {
       choosenClient = realmClients.find(
         (client) => client.clientId === ClientName

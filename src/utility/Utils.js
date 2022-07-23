@@ -64,9 +64,9 @@ export const getUserData = () => JSON.parse(localStorage.getItem("userData"));
  * @param {String} userRole Role of user
  */
 export const getHomeRouteForLoggedInUser = (userRole) => {
-  if (userRole === "admin") return "/";
-  if (userRole === "client") return "/monachus/events";
-  return "/login";
+  if (userRole === "admin") return "/monachus/dashboard";
+  if (userRole === "client") return "/monachus/dashboard";
+  return "/monachus/dashboard";
 };
 
 // ** React Select Theme Colors

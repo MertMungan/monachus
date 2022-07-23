@@ -65,6 +65,7 @@ const ExplorePage = withRouter(({ history, location }) => {
             vizState={finalVizState}
             chartExtra={[
               <Button
+                className='btn btn-primary'
                 key='button'
                 type='primary'
                 loading={addingToDashboard}

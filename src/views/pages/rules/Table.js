@@ -1,10 +1,8 @@
 // ** React Imports
-import { Fragment, useState, useEffect, forwardRef } from "react";
+import { Fragment, useState, useEffect } from "react";
 import "../../../formControlColor.css";
 // ** Add New Modal Component
 import ReactPaginate from "react-paginate";
-import AddNewModal from "../../tables/data-tables/basic/AddNewModal";
-import classnames from "classnames";
 import { useForm } from "react-hook-form";
 
 import { useContext } from "react";
@@ -25,7 +23,6 @@ import {
   CardHeader,
   CardTitle,
   Button,
-  Form,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -33,12 +30,7 @@ import {
   Input,
   Label,
   Row,
-  Col,
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
+  Col
 } from "reactstrap";
 // REDUX
 import { connect } from "react-redux";
