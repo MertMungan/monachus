@@ -1,19 +1,18 @@
 // ** React Imports
-import { Fragment, useState, useEffect, useRef } from "react";
-
+import { Fragment, useState, useEffect, useRef, useContext } from "react";
+import { AbilityContext } from "@src/utility/context/Can";
 // ** Invoice List Sidebar
-import Sidebar from "./Sidebar";
 
-import { fetchEvents } from "../../../../redux/actions/events";
-import { fetchAllRules } from "../../../../redux/actions/rules";
+import { fetchAlarms,fetchAlarmsByCategory } from '../../../../redux/actions/alarmData'
+import ReactJson from "react-json-view";
+
 import { connect } from "react-redux";
 import "../../../../formControlColor.css";
 
 // ** Table Columns
 
 // ** Store & Actions
-import { getAllData, getData } from "./store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 // ** Third Party Components
 import Select from "react-select";
@@ -21,27 +20,17 @@ import ReactPaginate from "react-paginate";
 import DataTable from "react-data-table-component";
 import Wizard from "@components/wizard";
 
-import EventPayload from "./steps/EventPayload";
 import FirstStep from "./steps/FirstStep";
-import SecondStep from "./steps/SecondStep";
 import ThirdStep from "./steps/ThirdStep";
 import FourthStep from "./steps/FourthStep";
 
 import {
   ChevronDown,
-  Edit,
-  Info,
-  FileText,
-  File,
-  Grid,
-  Copy,
+  Edit
 } from "react-feather";
 
 // ** Utils
 import { selectThemeColors } from "@utils";
-
-import { useContext } from "react";
-import { AbilityContext } from "@src/utility/context/Can";
 
 // ** Reactstrap Imports
 import {
@@ -50,13 +39,13 @@ import {
   Card,
   Input,
   Label,
-  Button,
   CardBody,
   CardTitle,
   CardHeader,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
+  ModalHeader,
+  ModalBody,
+  Modal,
+  CardText,
   UncontrolledDropdown,
 } from "reactstrap";
 
@@ -66,12 +55,13 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 // ** Table Header
 const CustomHeader = ({
-  store,
-  toggleSidebar,
-  handlePerPage,
+  role,
+  setShow,
+  searchValue,
   rowsPerPage,
+  handlePerPage,
   handleFilter,
-  searchTerm,
+  handleAssignedToChange
 }) => {
   // ** Converts table to CSV
   function convertArrayOfObjectsToCSV(array) {
@@ -142,15 +132,16 @@ const CustomHeader = ({
           className="d-flex align-items-sm-center justify-content-xl-end justify-content-start flex-xl-nowrap flex-wrap flex-sm-row flex-column pe-xl-1 p-0 mt-xl-0 mt-1"
         >
           <div className="d-flex align-items-center mb-sm-0 mb-1 me-1">
-            <label className="mb-0" htmlFor="search-invoice">
+            <Label className="mr-1" for="search-input">
               Search
-            </label>
+            </Label>
             <Input
-              id="search-invoice"
-              className="ml-1 w-100"
+              className="dataTable-filter mb-50"
               type="text"
-              value={searchTerm}
-              onChange={(e) => handleFilter(e.target.value)}
+              bsSize="sm"
+              id="search-input"
+              value={searchValue}
+              onChange={handleFilter}
             />
           </div>
 
@@ -194,33 +185,34 @@ const CustomHeader = ({
   );
 };
 const Table = ({
-  eventList = [],
-  fetchEvents = () => { },
-  queryList = [],
-  fetchAllRules = () => { },
+  alarmData = [],
+  fetchAlarms = () => { },
+  fetchAlarmsByCategory = () => { },
+  ruleCategoryData = [],
 }) => {
   // ** Store Vars
   const store = useSelector((state) => state.users);
 
   // ** States
-  const [sort, setSort] = useState("desc");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortColumn, setSortColumn] = useState("id");
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [show, setShow] = useState(false)
+  const [eventModalShow, setEventModalShow] = useState(false)
+  const [ruleModalShow, setRuleModalShow] = useState(false)
+  const [eventRowData, setEventRowData] = useState([])
+  const [ruleRowData, setRuleRowData] = useState([])
+  const [categorySelectData, setCategorySelectData] = useState([{value:"reset", label:"All Data"}])
+  const [assignedTo, setAssignedTo] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [listBilgisi, setListBilgisi] = useState([]);
   const [currentRole, setCurrentRole] = useState({
     value: "",
     label: "Select Rule Category",
   });
   const [currentPlan, setCurrentPlan] = useState({
-    value: "",
+    value: 0,
     label: "Select Time",
-  });
-  const [currentStatus, setCurrentStatus] = useState({
-    value: "",
-    label: "Select Status",
-    number: 0,
   });
 
   const ability = useContext(AbilityContext);
@@ -232,139 +224,195 @@ const Table = ({
   const [eventName, setEventName] = useState("");
   const columns = [
     {
-      name: "Transaction ID",
-      selector: (row) => row.eventID,
+      name: "ID",
+      selector: (row) => row.id,
       sortable: true,
+      maxWidth: "100px",
     },
     {
       name: "Event Name",
-      selector: (row) =>
-        eventList.length > 0 &&
-        eventList.find((item) => item.eventId === row.eventID)?.eventName,
+      selector: (row) => 
+      <p 
+      className="mb-0"
+      onClick={() => {
+        setEventModalShow(true)
+        setEventRowData(row.metadata_events)
+      }}>{row.metadata_events.name}</p>,
       sortable: true,
-    },
+      maxWidth: "150px",
 
+    },
     {
-      name: "Rule ID",
-      selector: (row) => row.id,
+      name: "Event Description",
+      selector: (row) => row.description,
       sortable: true,
     },
     {
       name: "Rule Name",
-      selector: (row) => row.name,
+      selector: (row) => <p 
+      className="mb-0"
+      onClick={() => {
+        setRuleModalShow(true)
+        setRuleRowData(row.metadata_rules)
+      }}>{row.metadata_rules.name}</p>,
       sortable: true,
-    },
-    {
-      name: "Rule Category",
-      selector: (row) => row.category,
-      sortable: true,
-    },
-    ability.can("create", "cep") &&
-    {
-      name: "Actions",
-      minWidth: "100px",
-      cell: (row) => (
-        <div className="column-action">
-          <Edit
-            size={15}
-            onClick={() => {
-              setSelectedAlert(row);
-              // setEventName(
-              //   eventList.find((e) => e.eventId === row.eventID).eventName
-              // );
-              setWizardOpen(true)
-            }}
-          />
-        </div>
-      ),
-    },
-  ];
+      maxWidth: "150px",
 
+    },
+    {
+      name: "Rule Description",
+      selector: (row) => row.metadata_rules.description,
+      sortable: true,
+    },
+    {
+      name: "Date Time",
+      selector: (row) => row.alarm_datetime,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => row.statu,
+      sortable: true,
+    },
+    // ability.can("create", "cep") &&
+    // {
+    //   name: "Actions",
+    //   minWidth: "100px",
+    //   cell: (row) => (
+    //     <div className="column-action">
+    //       <Edit
+    //         size={15}
+    //         onClick={() => {
+    //           setSelectedAlert(row);
+    //           setWizardOpen(true)
+    //         }}
+    //       />
+    //     </div>
+    //   ),
+    // },
+  ]
   // ** Function to toggle sidebar
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   // ** Get data on mount
-  useEffect(() => {
-    fetchEvents();
-    fetchAllRules();
-  }, [queryList]);
+  // useEffect(() => {
+  //   fetchAlarmsByCategory(currentPage,currentRole.id)
+  // }, [currentRole]);
+
+  const curD = new Date()
+  const curDate = curD.getFullYear() + '-' + (curD.getMonth() + 1) + '-' + curD.getDate();
+  const curTime = (curD.getHours()-currentPlan.value) + ':' + curD.getMinutes() + ':' + curD.getSeconds()
+  const curDateTime = curDate + "T" + curTime
 
   useEffect(() => {
-    if (queryList.data) {
-      // console.log(queryList.data);
-      setRules(queryList.data);
-    }
-  }, []);
+    fetchAlarms(currentPage,currentRole.value,curDateTime,currentPlan.value)
+  }, [currentPage,currentRole,curDateTime]);
 
   useEffect(() => {
-    if (selectedAlert !== null) {
-      // console.log(selectedAlert);
-      setWizardOpen(true);
+    for (let index = 0; index < ruleCategoryData.length; index++) {
+      setCategorySelectData(current => [...current, {
+        value: ruleCategoryData[index].id,
+        label: ruleCategoryData[index].name,
+      }]);
+
     }
-  }, [selectedAlert]);
+  }, [ruleCategoryData])
   // ** User filter options
-  const roleOptions = [
-    { value: "", label: "Select Rule Category" },
-    { value: "test", label: "Marketing" },
-    { value: "author", label: "Finance" },
-    { value: "editor", label: "Network" },
-  ];
 
   const planOptions = [
-    { value: "", label: "1 Hour Ago" },
-    { value: "basic", label: "3 Hour Ago" },
-    { value: "company", label: "8 Hour Ago" },
-    { value: "enterprise", label: "12 Hour Ago" },
-  ];
-
-  const statusOptions = [
-    { value: "", label: "Select Status", number: 0 },
-    { value: "pending", label: "Pending", number: 1 },
-    { value: "active", label: "Active", number: 2 },
-    { value: "inactive", label: "Inactive", number: 3 },
+    { value: 0, label: "Total Data"},
+    { value: 1, label: "1 Hour Ago" },
+    { value: 3, label: "3 Hour Ago" },
+    { value: 8, label: "8 Hour Ago" },
+    { value: 12, label: "12 Hour Ago" },
   ];
 
   // ** Function in get data on page change
   const handlePagination = (page) => {
-    setCurrentPage(page.selected + 1);
+    setCurrentPage(page.selected);
   };
+
+  let totalDataLenght = ""
+  let result = ""
+
+  if (alarmData.headers) {
+    totalDataLenght = alarmData.headers["content-range"]
+    var n = totalDataLenght.lastIndexOf('/');
+    result = totalDataLenght.substring(n + 1);
+  }
 
   // ** Function in get data on rows per page
-  const handlePerPage = (e) => {
-    const value = parseInt(e.currentTarget.value);
-    setRowsPerPage(value);
-  };
+  const handlePerPage = e => {
+    const value = parseInt(e.currentTarget.value)
+    setRowsPerPage(value)
+  }
 
   // ** Function in get data on search query change
-  const handleFilter = (val) => {
-    setSearchTerm(val);
+  const handleFilter = (e) => {
+    const value = e.target.value;
+    let updatedData = [];
+    setSearchValue(value);
+
+    if (value.length) {
+      updatedData = alarmData.data?.filter((item) => {
+        const startsWith =
+          item.id.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.event_type.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.event_id.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.rule_id.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.alarm_datetime.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.statu.toLowerCase().startsWith(value.toLowerCase())
+
+        const includes =
+          item.id.toLowerCase().includes(value.toLowerCase()) ||
+          item.event_type.toLowerCase().includes(value.toLowerCase()) ||
+          item.event_id.toLowerCase().includes(value.toLowerCase()) ||
+          item.rule_id.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.alarm_datetime.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.statu.toLowerCase().startsWith(value.toLowerCase())
+
+        if (startsWith) {
+          return startsWith;
+        } else if (!startsWith && includes) {
+          return includes;
+        } else return null;
+      });
+      setFilteredData(updatedData);
+      setSearchValue(value);
+    }
   };
+  // ** Function to filter Roles
+  const handleAssignedToChange = val => {
+    setAssignedTo(val)
+  }
 
   // ** Custom Pagination
-  const CustomPagination = () => {
-    const count = Number(Math.ceil(queryList.data?.total / rowsPerPage));
-
-    return (
-      <ReactPaginate
-        previousLabel={""}
-        nextLabel={""}
-        pageCount={count || 1}
-        activeClassName="active"
-        forcePage={currentPage !== 0 ? currentPage - 1 : 0}
-        onPageChange={(page) => handlePagination(page)}
-        pageClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        nextClassName={"page-item next"}
-        previousClassName={"page-item prev"}
-        previousLinkClassName={"page-link"}
-        pageLinkClassName={"page-link"}
-        containerClassName={
-          "pagination react-paginate justify-content-end my-2 pe-1"
-        }
-      />
-    );
-  };
-
+  const CustomPagination = () => (
+    <ReactPaginate
+      previousLabel=""
+      nextLabel=""
+      forcePage={currentPage}
+      onPageChange={(page) => handlePagination(page)}
+      pageCount={
+        searchValue.length
+          ? filteredData.length / 10
+          : result / 10 || 1
+      }
+      breakLabel="..."
+      pageRangeDisplayed={2}
+      marginPagesDisplayed={2}
+      activeClassName="active"
+      pageClassName="page-item"
+      breakClassName="page-item"
+      breakLinkClassName="page-link"
+      nextLinkClassName="page-link"
+      nextClassName="page-item next"
+      previousClassName="page-item prev"
+      previousLinkClassName="page-link"
+      pageLinkClassName="page-link"
+      containerClassName="pagination react-paginate separated-pagination pagination-sm justify-content-end pr-1 mt-1"
+    />
+  );
   // ** Table data to render
   const dataToRender = () => {
     const filters = {
@@ -438,53 +486,87 @@ const Table = ({
 
   return (
     <Fragment>
-      {wizardOpen === true ? (
-        <Wizard
-          type="horizontal"
-          ref={ref}
-          steps={steps}
-          options={{
-            linear: false,
-          }}
-          instance={(el) => setStepper(el)}
-        />
-      ) : (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle tag="h4">Filters</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <Row>
-                <Col md="6">
-                  <Label for="role-select">Rule Category</Label>
-                  <Select
-                    isClearable={false}
-                    value={currentRole}
-                    options={roleOptions}
-                    className="react-select"
-                    classNamePrefix="select"
-                    theme={selectThemeColors}
-                    onChange={(data) => {
-                      setCurrentRole(data);
-                    }}
-                  />
-                </Col>
-                <Col className="my-md-0 my-1" md="6">
-                  <Label for="plan-select">From</Label>
-                  <Select
-                    theme={selectThemeColors}
-                    isClearable={false}
-                    className="react-select"
-                    classNamePrefix="select"
-                    options={planOptions}
-                    value={currentPlan}
-                    onChange={(data) => {
-                      setCurrentPlan(data);
-                    }}
-                  />
-                </Col>
-                {/* <Col md='4'>
+
+      {/* MODAL İÇİN PAGE/MODALEXAMPLE KLASÖRÜNE BAK ORADA WİZARD İLE YAPILMIŞ HALİ VAR  */}
+
+      <Modal isOpen={eventModalShow} toggle={() => setEventModalShow(!eventModalShow)} className='modal-dialog-centered modal-lg'>
+        <ModalHeader className='bg-transparent' toggle={() => setEventModalShow(!eventModalShow)}></ModalHeader>
+        <ModalBody className='pb-3 px-sm-3'>
+          <h1 className='text-center mb-1'>Event Details</h1>
+          {/* <p className='text-center mb-2'>Provide application data with this form</p> */}
+          <CardText className='mb-2'>{eventRowData.id}</CardText>
+          <CardText className='mb-2'>{eventRowData.name}</CardText>
+          <CardText className='mb-2'>{eventRowData.description}</CardText>
+          <CardText className='mb-2'>{eventRowData.metadata}</CardText>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={ruleModalShow} toggle={() => setRuleModalShow(!ruleModalShow)} className='modal-dialog-centered modal-lg'>
+        <ModalHeader className='bg-transparent' toggle={() => setRuleModalShow(!ruleModalShow)}></ModalHeader>
+        <ModalBody className='pb-3 px-sm-3'>
+          <h1 className='text-center mb-1'>Rule Details</h1>
+          {/* <p className='text-center mb-2'>Provide application data with this form</p> */}
+          <CardText className='mb-2'>{ruleRowData.id}</CardText>
+          <CardText className='mb-2'>{ruleRowData.name}</CardText>
+          <CardText className='mb-2'>{ruleRowData.description}</CardText>
+          {/* SRC RULE'LARIN METADASI OLDUĞU ZAMAN YANDAKİ ŞEKİLDE DEĞİŞECEK ruleRowData.metadata?.children1  */}
+          <ReactJson
+                  src={{"b88babba-cdef-4012-b456-7182352713e1": {
+                    "type": "rule",
+                    "properties": {
+                        "field": "sayı",
+                        "operator": "equal",
+                        "value": [
+                            "75"
+                        ],
+                        "valueSrc": [
+                            "value"
+                        ],
+                        "valueType": [
+                            "text"
+                        ]
+                    }
+                }}}
+                  theme="monokai"
+                />
+        </ModalBody>
+      </Modal>
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle tag="h4">Filters</CardTitle>
+          </CardHeader>
+          <CardBody>
+            <Row>
+              <Col md="6">
+                <Label for="role-select">Rule Category</Label>
+                <Select
+                  isClearable={false}
+                  value={currentRole}
+                  options={categorySelectData}
+                  className="react-select"
+                  classNamePrefix="select"
+                  theme={selectThemeColors}
+                  onChange={(data) => {
+                    setCurrentRole(data);
+                  }}
+                />
+              </Col>
+              <Col className="my-md-0 my-1" md="6">
+                <Label for="plan-select">From</Label>
+                <Select
+                  theme={selectThemeColors}
+                  isClearable={false}
+                  className="react-select"
+                  classNamePrefix="select"
+                  options={planOptions}
+                  value={currentPlan}
+                  onChange={(data) => {
+                    setCurrentPlan(data);
+                  }}
+                />
+              </Col>
+              {/* <Col md='4'>
               <Label for='status-select'>Status</Label>
               <Select
                 theme={selectThemeColors}
@@ -510,49 +592,47 @@ const Table = ({
                 }}
               />
             </Col> */}
-              </Row>
-            </CardBody>
-          </Card>
+            </Row>
+          </CardBody>
+        </Card>
 
-          <Card className="overflow-hidden">
-            <div className="react-dataTable">
-              <DataTable
-                noHeader
-                subHeader
-                sortServer
-                pagination
-                responsive
-                paginationServer
-                columns={columns}
-                onSort={handleSort}
-                sortIcon={<ChevronDown />}
-                className="react-dataTable"
-                paginationComponent={CustomPagination}
-                data={queryList.data}
-                subHeaderComponent={
-                  <CustomHeader
-                    store={store}
-                    searchTerm={searchTerm}
-                    rowsPerPage={rowsPerPage}
-                    handleFilter={handleFilter}
-                    handlePerPage={handlePerPage}
-                    toggleSidebar={toggleSidebar}
-                  />
-                }
-              />
-            </div>
-          </Card>
-        </>
-      )}
+        <Card className="overflow-hidden">
+          <div className='react-dataTable'>
+            <DataTable
+              noHeader
+              pagination
+              subHeader
+              responsive
+              paginationDefaultPage={currentPage + 1}
+              columns={columns}
+              sortIcon={<ChevronDown />}
+              className='react-dataTable'
+              paginationComponent={CustomPagination}
+              data={searchValue.length ? filteredData : alarmData.data}
+              subHeaderComponent={
+                <CustomHeader
+                  setShow={setShow}
+                  assignedTo={assignedTo}
+                  searchValue={searchValue}
+                  rowsPerPage={rowsPerPage}
+                  handleFilter={handleFilter}
+                  handlePerPage={handlePerPage}
+                  handleAssignedToChange={handleAssignedToChange}
+                />
+              }
+            />
+          </div>
+        </Card>
+      </>
     </Fragment>
   );
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields, queryList: state.query };
+  return { alarmData: state.AlarmsReducer, ruleCategoryData: state.ruleCategoryReducer };
 };
 
 export default connect(mapStateToProps, {
-  fetchEvents,
-  fetchAllRules,
+  fetchAlarms,
+  fetchAlarmsByCategory,
 })(Table);

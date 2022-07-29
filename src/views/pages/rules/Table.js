@@ -30,12 +30,13 @@ import {
   Input,
   Label,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 // REDUX
 import { connect } from "react-redux";
 import { fetchEvents } from "../../../redux/actions/events/index";
 import { fetchRule } from "../../../redux/actions/rules/index";
+import { deleteMetaDataRules } from "../../../redux/actions/metaDataRules"
 // REDUX
 
 // ** Styles
@@ -43,20 +44,11 @@ import "@styles/react/libs/react-select/_react-select.scss";
 import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 const Table = ({
-  eventList,
-  fetchEvents,
-  queryList = [],
-  fetchAllRule = () => {},
-  listData = [],
   wizardOpen = false,
   setWizardOpen = () => {},
-  resetInfo = {},
   setResetInfo = () => {},
-  categoryArray = [],
-  eventsArray = [],
-  setSelectedEvent = () => {},
-  setSelectedRule = () => {},
-  appliedEvent = "",
+  deleteMetaDataRules = () => {},
+  listData = []
 }) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -80,25 +72,25 @@ const Table = ({
     console.log(data);
   };
 
-  useEffect(() => {
-    // console.log("listBilgisi", listBilgisi);
-    // console.log("listedCategory", listedCategory);
-    if (listBilgisi.length > 0) {
-      // listBilgisi'nin elementleri arasında category propertysi listedCategory'a eşit olanları filtrele
-      const filteredData = queryList.data?.filter((item) => {
-        return item.category === listedCategory;
-      });
-      setListBilgisi(filteredData);
-    }
-  }, [listedCategory]);
-
-  useEffect(() => {
-    setListBilgisi(queryList.data);
-  }, [queryList]);
+  // useEffect(() => {
+  //   // console.log("listBilgisi", listBilgisi);
+  //   // console.log("listedCategory", listedCategory);
+  //   if (listBilgisi.length > 0) {
+  //     // listBilgisi'nin elementleri arasında category propertysi listedCategory'a eşit olanları filtrele
+  //     const filteredData = queryList.data?.filter((item) => {
+  //       return item.category === listedCategory;
+  //     });
+  //     setListBilgisi(filteredData);
+  //   }
+  // }, [listedCategory]);
 
   // useEffect(() => {
-  //   setListBilgisi(listData);
-  // }, [listData]);
+  //   setListBilgisi(queryList.data);
+  // }, [queryList]);
+
+  useEffect(() => {
+    setListBilgisi(listData);
+  }, [listData]);
 
   const ExpandableTable = ({ data }) => {
     // console.log("expandableTable data", data);
@@ -146,20 +138,18 @@ const Table = ({
       sortable: true,
     },
     {
-      name: "Category",
-      selector: (row) => row.category,
+      name: "Rule Name",
+      selector: (row) => row.name,
       sortable: true,
     },
     {
       name: "Description",
-      selector: (row) => row.desc,
+      selector: (row) => row.description,
       sortable: true,
     },
     {
       name: "Applied Event",
-      selector: (row) =>
-        eventList.length > 0 &&
-        eventList.find((item) => item.eventId === row.eventID)?.eventName,
+      selector: (row) => row.assigned_event,
       sortable: true,
     },
     ability.can("create", "cep") && {
@@ -197,21 +187,25 @@ const Table = ({
                   className="w-100"
                   onClick={(e) => e.preventDefault()}
                 >
-                  <Trash size={15} />
-                  <span className="align-middle ml-50">Delete</span>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+            <Trash 
+            size={15}
+            className='mr-1'
+            onClick={() => deleteMetaDataRules(row.id)}
+          />
+
             <Edit
               size={15}
               onClick={() => {
                 setResetInfo({
-                  ruleId: row.id,
-                  ruleName: row.name,
-                  ruleDescription: row.desc,
-                  assignedEvent: row.eventID,
-                  assignedCategory: row.category,
-                  builderInfo: row.fields,
+                  id: row.id,
+                  name: row.name,
+                  description: row.description,
+                  assignedEvent: row.assigned_event,
+                  assignedCategory: row.category_id,
+                  builderInfo: row.metadata,
                   configuration: "",
                 });
                 setWizardOpen(true);
@@ -232,14 +226,14 @@ const Table = ({
             <input
               type="checkbox"
               className="custom-control-input"
-              name={row.eventID}
-              id={row.eventID}
+              name={row.id}
+              id={row.id}
               data-toggle="toggle"
               ref={register({})}
             />
             <label
               className="custom-control-label"
-              htmlFor={row.eventID}
+              htmlFor={row.id}
             ></label>
           </div>
         );
@@ -289,9 +283,9 @@ const Table = ({
                 color="primary"
                 onClick={() => {
                   setResetInfo({
-                    ruleId: "",
-                    ruleName: "",
-                    ruleDescription: "",
+                    id: "",
+                    name: "",
+                    description: "",
                     assignedEvent: "",
                     assignedCategory: "",
                     builderInfo: [],
@@ -343,4 +337,4 @@ const mapStateToProps = (state) => {
   return { eventList: state.fields, queryList: state.query };
 };
 
-export default connect(mapStateToProps, { fetchEvents, fetchRule })(Table);
+export default connect(mapStateToProps, { fetchEvents, fetchRule,deleteMetaDataRules })(Table);

@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { Utils as QbUtils } from "react-awesome-query-builder";
-import { Label, FormGroup, Row, Col, Input, Form, Button } from "reactstrap";
+import { Col, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
 import { connect } from "react-redux";
@@ -20,9 +19,9 @@ function RuleThirdStep(props) {
     setWizardOpen,
     setRuleThirdStep,
     eventsArray,
-    ruleId,
-    ruleName,
-    ruleDescription,
+    id,
+    name,
+    description,
     assignedEvent,
     assignedCategory,
     resetId,
@@ -38,15 +37,16 @@ function RuleThirdStep(props) {
     reset,
     formState: { errors },
   } = useForm();
+
   return (
     <Fragment>
       <QueryBuilder
         stepper={stepper}
         setRuleThirdStep={setRuleThirdStep}
         eventsArray={eventsArray}
-        ruleId={ruleId}
-        ruleName={ruleName}
-        ruleDescription={ruleDescription}
+        id={id}
+        name={name}
+        description={description}
         assignedEvent={assignedEvent}
         assignedCategory={assignedCategory}
         resetId={resetId}
@@ -113,7 +113,7 @@ RuleThirdStep.propTypes = {
   stepper: PropTypes.object,
   type: PropTypes.string,
   setRuleSecondStep: PropTypes.func,
-  resetEvent: PropTypes.string,
+  resetEvent: PropTypes.object,
   resetCategory: PropTypes.string,
   eventList: PropTypes.array,
   addRule: PropTypes.func,
@@ -121,9 +121,9 @@ RuleThirdStep.propTypes = {
   rulesCategory: PropTypes.array,
   setWizardOpen: PropTypes.func,
   setRuleThirdStep: PropTypes.func,
-  ruleId: PropTypes.string,
-  ruleName: PropTypes.string,
-  ruleDescription: PropTypes.string,
+  id: PropTypes.string,
+  name: PropTypes.string,
+  description: PropTypes.string,
   assignedEvent: PropTypes.string,
   assignedCategory: PropTypes.string,
   resetId: PropTypes.string,

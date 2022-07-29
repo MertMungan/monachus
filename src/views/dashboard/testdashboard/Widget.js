@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { makeStyles, styled } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import IconButton from '@material-ui/core/IconButton'
@@ -6,7 +6,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-
+import TextField from '@mui/material/TextField';
 import Collapse from '@material-ui/core/Collapse'
 import Typography from '@material-ui/core/Typography'
 import ReactECharts from 'echarts-for-react'
@@ -14,7 +14,9 @@ import CardContent from '@material-ui/core/CardContent'
 import CardHeader from '@material-ui/core/CardHeader'
 import Avatar from '@material-ui/core/Avatar'
 import CardActions from '@material-ui/core/CardActions'
-import { fontSize } from '@mui/system'
+import {
+  Button,
+} from "reactstrap";
 
 const useStyles = makeStyles({
   root: {
@@ -49,7 +51,6 @@ const useStyles = makeStyles({
   content: {
     width: '100%',
     height: '100%',
-    display: 'flex',
     flexDirection: 'column',
     padding: 5
   },
@@ -78,23 +79,58 @@ const ExpandMore = styled((props) => {
 
 function Widget({
   id,
-  onRemoveItem = () => {},
-  toggleWidgetLayout = () => {},
+  onRemoveItem = () => { },
+  toggleWidgetLayout = () => { },
   chartType = '',
   chartData = {}
 }) {
   const [expanded, setExpanded] = React.useState(false)
+  const [textInput, setTextInput] = useState('');
+  const [manualJsonData, setManualJsonData] = useState("");
+  const [jsonDataError, setJsonDataError] = useState("");
+  const [defultData, setDefultData] = useState("Please enter an array")
   const [skin, setSkin] = React.useState(localStorage.getItem('skin'))
   const handleExpandClick = () => {
     setExpanded(!expanded)
     toggleWidgetLayout()
+
   }
   const classes = useStyles()
 
   useEffect(() => {
     setSkin(localStorage.getItem('skin'))
   }, [])
+  
+  const isJsonString = (str = '') => {
+    try {
+      JSON.parse(str)
+    } catch (e) {
+      return false
+    }
+    return true
+  }
 
+  // ADD MANUALLY MODAL DATA
+  const handleChange = (e) => {
+    setDefultData(e.target.value);
+  };
+
+  // MANUAL JSON EKLEME
+  const handleSend = () => {
+    const isJson = isJsonString(defultData);
+
+    if (isJson) {
+      if (Object.keys(JSON.parse(defultData)).length < 1) {
+        setJsonDataError("Please add an non empty array");
+      } else {
+        setJsonDataError("çal keke çal")
+      }
+    } else
+      setJsonDataError("Your text cannot be converted to JSon please check");
+  };
+  const handleClear = () => {
+    setDefultData("")
+  }
   return (
     <>
       <Card className={skin === 'dark' ? classes.root2 : classes.root}>
@@ -121,7 +157,6 @@ function Widget({
               style={{ height: '100%', width: '100%' }}
             />
             <Typography variant='body2' color='textSecondary' component='p'>
-             
             </Typography>
           </CardContent>
         )}
@@ -144,18 +179,28 @@ function Widget({
         </CardActions>
         <Collapse in={expanded} timeout='auto'>
           <CardContent>
-            <Typography paragraph>Method:</Typography>
+            <Typography paragraph>{jsonDataError}</Typography>
+            <TextField
+              fullWidth
+              style={{ backgroundColor: "white" }}
+              id="outlined-multiline-static"
+              multiline
+              rows={6}
+              defaultValue="Test"
+              value={defultData}
+              onChange={handleChange}
+            />
+            <Button className='add-new-user' color='primary' onClick={() => { handleSend() }}>
+              Send
+            </Button>
+            <Button className='add-new-user ml-1' color='primary' outline onClick={() => { handleClear() }}>
+              Clear
+            </Button>
             <Typography paragraph>
-            
             </Typography>
             <Typography paragraph>
-            
-            </Typography>
-            <Typography paragraph>
-             
             </Typography>
             <Typography>
-             
             </Typography>
           </CardContent>
         </Collapse>

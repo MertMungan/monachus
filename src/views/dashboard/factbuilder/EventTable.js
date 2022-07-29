@@ -35,6 +35,7 @@ import {
 // REDUX
 import { connect } from 'react-redux'
 import { fetchEvents, deleteEvents } from '../../../redux/actions/events/index'
+import { deleteMetaDataEvents } from '../../../redux/actions/metaDataEvents'
 // REDUX
 
 // REALTIME LINE
@@ -51,7 +52,8 @@ const Table = ({
   setWizardOpen = () => {},
   setResetInfo = () => {},
   setSelectedEvent = () => {},
-  setShowFieldsTable = () => {}
+  setShowFieldsTable = () => {},
+  deleteMetaDataEvents = () => {}
 }) => {
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
@@ -76,14 +78,14 @@ const Table = ({
     if (value.length) {
       updatedData = listBilgisi?.filter((item) => {
         const startsWith =
-          item.eventId.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.eventName.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.eventDescription.toLowerCase().startsWith(value.toLowerCase())
+          item.id.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.name.toLowerCase().startsWith(value.toLowerCase()) ||
+          item.description.toLowerCase().startsWith(value.toLowerCase())
 
         const includes =
-          item.eventId.toLowerCase().includes(value.toLowerCase()) ||
-          item.eventName.toLowerCase().includes(value.toLowerCase()) ||
-          item.eventDescription.toLowerCase().includes(value.toLowerCase())
+          item.id.toLowerCase().includes(value.toLowerCase()) ||
+          item.name.toLowerCase().includes(value.toLowerCase()) ||
+          item.description.toLowerCase().includes(value.toLowerCase())
 
         if (startsWith) {
           return startsWith
@@ -99,22 +101,22 @@ const Table = ({
   const columns = [
     {
       name: 'ID',
-      selector: (row) => row.eventId,
+      selector: (row) => row.id,
       sortable: true
     },
     {
       name: 'Name',
-      selector: (row) => row.eventName,
+      selector: (row) => row.name,
       sortable: true
     },
     {
       name: 'Description',
-      selector: (row) => row.eventDescription,
+      selector: (row) => row.description,
       sortable: true
     },
     // {
     //   name: "Status",
-    //   selector: (row) => row.eventStatus,
+    //   selector: (row) => row.metadata,
     //   sortable: true,
     // },
     ability.can('create', 'cep') && {
@@ -152,12 +154,12 @@ const Table = ({
             <Trash
               className='mr-1'
               size={15}
-              onClick={deleteEvents(row.eventId)}
+              onClick={() => deleteMetaDataEvents(row.id)}
             />
             <Edit
               size={15}
               onClick={() => {
-                setResetInfo(row),
+                  setResetInfo(row),
                   setSelectedEvent(row),
                   setWizardOpen(true),
                   setShowFieldsTable(true)
@@ -277,4 +279,4 @@ const mapStateToProps = (state) => {
   return { eventList: state.fields }
 }
 
-export default connect(mapStateToProps, { fetchEvents, deleteEvents })(Table)
+export default connect(mapStateToProps, { fetchEvents, deleteEvents,deleteMetaDataEvents })(Table)

@@ -1,34 +1,29 @@
 import React, { Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { Utils as QbUtils } from "react-awesome-query-builder";
 import { Label, FormGroup, Row, Col, Input, Form, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
 import { connect } from "react-redux";
-import {
-  fetchEvents,
-  addEvents,
-  deleteEvents,
-} from "../../../../redux/actions/events/index";
+
 // REDUX
 
 function factset(props) {
-  const { stepper, type, seteventName, addEvents, setWizardOpen, wizardOpen,resetName} = props;
+  const { stepper, type, seteventName, setWizardOpen, wizardOpen,resetName} = props;
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  
   const onSubmit = (data) => {
-    seteventName(data.eventName);
-    reset();
+    seteventName(data.name);
   };
 
   useEffect(() => {
     if (resetName !== "") {
-      reset({ eventName: resetName });
+      reset({ name: resetName });
     }
   }, [resetName]);
 
@@ -41,8 +36,8 @@ function factset(props) {
             <input
               type="text"
               className="form-control"
-              name={`eventName`}
-              id={`eventName-${type}`}
+              name={`name`}
+              id={`name-${type}`}
               placeholder="Enter Your Event Name"
               ref={register({})}
             />
@@ -91,11 +86,10 @@ factset.propTypes = {
   seteventName: PropTypes.func,
   resetName: PropTypes.string,
   eventList: PropTypes.array,
-  addEvents: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
   return { eventList: state.fields };
 };
 
-export default connect(mapStateToProps, { addEvents })(factset);
+export default connect(mapStateToProps, {  })(factset);

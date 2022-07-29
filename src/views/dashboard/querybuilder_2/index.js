@@ -29,22 +29,10 @@ import {
   Row,
   Col,
   Card,
-  CardLink,
-  Breadcrumb,
-  BreadcrumbItem,
   CardBody,
   Button,
-  CardSubtitle,
-  CardText,
-  CardTitle,
   CustomInput,
   Label,
-  Spinner,
-  TabContent,
-  TabPane,
-  Nav,
-  NavItem,
-  NavLink,
 } from "reactstrap";
 import jsonLogic from "json-logic-js";
 import { convertToQueryBuilderFormat } from "./utils/conversation";
@@ -84,20 +72,15 @@ function QueryBuilder(props) {
     queryValues,
     setRuleThirdStep,
     eventsArray,
-    ruleId,
-    ruleName,
-    ruleDescription,
+    id,
+    name,
+    description,
     assignedEvent,
     assignedCategory,
-    resetId,
-    resetName,
-    resetDescription,
-    resetCategory,
-    resetEvent,
-    resetInfo,
+    metaEventData,
+    metaRuleData
   } = props;
   // STATES
-  let { id } = useParams();
   const [queryValue, setQueryValue] = useState(emptyInitValue); //Query Value From the Server
   const [queryConfig, setQueryConfig] = useState(null); //Initial Config From The server
   const [currentData, setcurrentData] = useState([]); //Data for jsonLogic
@@ -108,8 +91,8 @@ function QueryBuilder(props) {
   const [selectedRule, setSelectedRule] = useState("");
   const [ruleLogicFormat, setruleLogicFormat] = useState({});
   const [querySpecification, setQuerySpecification] = useState({
-    ruleName: "",
-    ruleDescription: "",
+    name: "",
+    description: "",
     ruleCategory: "",
   });
   const [result, setResult] = useState(null);
@@ -164,16 +147,18 @@ function QueryBuilder(props) {
     ) {
       let chosenFields = null;
       setQuerySpecification({
-        ruleName: ruleName,
-        ruleDescription: ruleDescription,
+        name: name,
+        description: description,
         ruleCategory: assignedCategory,
       });
       if (newRuleID !== "") {
-        const dataFoundForQuery = queryValues?.data?.find(function (item) {
+        const dataFoundForQuery = metaRuleData.find(function (item) {
           if (item.id === newRuleID) {
-            if (item?.fields) {
-              chosenFields = item.fields[0];
-              setQueryValue(item.fields[0]);
+            if (item?.metadata) {
+              console.log("item.metadata",item.metadata)
+
+              chosenFields = item.metadata;
+              setQueryValue(item.metadata);
             }
             return true;
           } else {
@@ -185,36 +170,40 @@ function QueryBuilder(props) {
         chosenFields = emptyInitValue;
         setQueryValue(emptyInitValue);
       }
-
+      debugger;
       const convertedQueryFormat = convertToQueryBuilderFormat(selectedFact);
+
       const lastTreeConfig = treeConfig(
         MaterialConfig,
         convertedQueryFormat,
         funcs
       );
+
       setQueryConfig(lastTreeConfig);
       const treeToBeLoaded = QbUtils.loadTree(chosenFields);
+
       let initTree = QbUtils.checkTree(treeToBeLoaded, lastTreeConfig);
+
       setState({
-        tree: initTree,
-        config: lastTreeConfig,
-      });
+          tree: initTree,
+          config: lastTreeConfig,
+        });
 
       if (state?.tree && state?.config) {
         setruleLogicFormat(QbUtils.jsonLogicFormat(state.tree, state.config));
       }
 
-      if (queryValues?.data && queryValues?.data.length > 0) {
-        setRulesList(queryValues.data);
+      if (metaRuleData && metaRuleData?.length > 0) {
+        setRulesList(metaRuleData);
       }
     }
   }, [selectedFact]);
 
   useEffect(() => {
-    if (ruleId !== "") {
-      setNewRuleID(ruleId);
+    if (id !== "") {
+      setNewRuleID(id);
     }
-  }, [ruleId]);
+  }, [id]);
 
   useEffect(() => {
     if (
@@ -222,10 +211,9 @@ function QueryBuilder(props) {
       assignedEvent !== undefined &&
       assignedEvent.length > 0
     ) {
-      let found = fieldList.find((field) => field.eventId === assignedEvent);
-      // console.log("found", found);
+      let found = metaEventData.find((item) => item.id === assignedEvent);
       setSelectedFact(found);
-      localStorage.setItem("eventID", found.eventId);
+      localStorage.setItem("eventID", found?.id);
     }
   }, [assignedEvent]);
 
@@ -234,8 +222,8 @@ function QueryBuilder(props) {
     isAutoSave && handleBasicTitleAlert("Danger", "Dont!");
     if (
       isAutoSave &&
-      ruleName !== "" &&
-      ruleDescription !== "" &&
+      name !== "" &&
+      description !== "" &&
       assignedCategory !== "" &&
       assignedEvent !== ""
     ) {
@@ -244,8 +232,8 @@ function QueryBuilder(props) {
       /*  addRule(
         QbUtils.uuid(),
         assignedEvent,
-        ruleName,
-        ruleDescription,
+        name,
+        description,
         assignedCategory,
         serverPostData,
         QbUtils.jsonLogicFormat(state.tree, state.config)
@@ -275,11 +263,6 @@ function QueryBuilder(props) {
   } = useForm();
   // FORM ACTIONS
 
-  const handleNewRule = (eventID, name, desc, category, fields, rule) => {
-    const newId = QbUtils.uuid();
-    /*     addRule(newId, eventID, name, desc, category, fields, rule);
-     */
-  };
   const onChange = (immutableTree, config) => {
     setState({ tree: immutableTree, config: config });
     const jsonTree = QbUtils.getTree(immutableTree);
@@ -287,16 +270,16 @@ function QueryBuilder(props) {
     /*     if (
       isAutoSave &&
       newRuleID !== "" &&
-      ruleName !== "" &&
-      ruleDescription !== "" &&
+      name !== "" &&
+      description !== "" &&
       assignedCategory !== "" &&
       assignedEvent !== ""
     ) {
       addRule(
         newRuleID,
         assignedEvent,
-        ruleName,
-        ruleDescription,
+        name,
+        description,
         assignedCategory,
         jsonTree,
         QbUtils.jsonLogicFormat(state.tree, state.config)
@@ -304,7 +287,6 @@ function QueryBuilder(props) {
     } */
   };
   // FORM ACTIONS
-
   // BUILDERS
   const renderBuilder = (props) => (
     <div className="query-builder-container" style={{ padding: "10px" }}>
@@ -321,7 +303,7 @@ function QueryBuilder(props) {
           />
         </div>
         {newRuleID ? (
-          <h5>{`Rule Builder for ${ruleName} - ${newRuleID}`}</h5>
+          <h5>{`Rule Builder for ${name} - ${newRuleID}`}</h5>
         ) : (
           <h5>No Rule Selected</h5>
         )}
@@ -357,16 +339,16 @@ function QueryBuilder(props) {
                           ]),
                           /*  
                           ? updateRule(
-                              ruleId,
-                              ruleName,
-                              ruleDescription,
+                              id,
+                              name,
+                              description,
                               assignedCategory,
                               serverPostData,
                               QbUtils.jsonLogicFormat(state.tree, state.config)
                             )
                           : handleNewRule(
-                              ruleName,
-                              ruleDescription,
+                              name,
+                              description,
                               assignedCategory,
                               serverPostData,
                               QbUtils.jsonLogicFormat(state.tree, state.config)
@@ -411,6 +393,9 @@ const mapStateToProps = (state) => {
     queryInitConfig: state.treeconfig,
     fieldList: state.fields,
     queryValues: state.query,
+    metaEventData: state.metaDataEventsReducer,
+    metaRuleData: state.metaDataRulesReducer
+
   };
 };
 
@@ -423,17 +408,19 @@ QueryBuilder.propTypes = {
   queryValues: PropTypes.array,
   setRuleThirdStep: PropTypes.func,
   eventsArray: PropTypes.array,
-  ruleId: PropTypes.string,
-  ruleName: PropTypes.string,
-  ruleDescription: PropTypes.string,
+  id: PropTypes.string,
+  name: PropTypes.string,
+  description: PropTypes.string,
   assignedEvent: PropTypes.string,
   assignedCategory: PropTypes.string,
   resetId: PropTypes.string,
   resetName: PropTypes.string,
   resetDescription: PropTypes.string,
   resetCategory: PropTypes.string,
-  resetEvent: PropTypes.object,
+  resetEvent: PropTypes.string,
   resetInfo: PropTypes.object,
+  metaEventData: PropTypes.array,
+  metaRuleData: PropTypes.array,
 };
 
 export default connect(mapStateToProps, {

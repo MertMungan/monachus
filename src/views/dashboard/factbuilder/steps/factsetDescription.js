@@ -6,11 +6,6 @@ import { Label, FormGroup, Row, Col, Input, Form, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
 import { connect } from "react-redux";
-import {
-  fetchEvents,
-  addEvents,
-  deleteEvents,
-} from "../../../../redux/actions/events/index";
 // REDUX
 
 function factset(props) {
@@ -20,7 +15,6 @@ function factset(props) {
     setEventDescription,
     eventDescription,
     resetDescription,
-    addEvents,
     setWizardOpen,
     wizardOpen,
     eventList,
@@ -34,12 +28,12 @@ function factset(props) {
 
   useEffect(() => {
     if (resetDescription !== "") {
-      reset({ eventDescription: resetDescription });
+      reset({ description: resetDescription });
     }
   }, [resetDescription]);
 
   const onSubmit = (data) => {
-    setEventDescription(data.eventDescription);
+    setEventDescription(data.description);
   };
 
   return (
@@ -51,8 +45,8 @@ function factset(props) {
             <input
               type="text"
               className="form-control"
-              name={`eventDescription`}
-              id={`eventDescription-${type}`}
+              name={`description`}
+              id={`description-${type}`}
               placeholder="Enter Your Event Description"
               ref={register({})}
             />
@@ -121,11 +115,10 @@ factset.propTypes = {
   setEventDescription: PropTypes.func,
   resetDescription: PropTypes.string,
   eventList: PropTypes.array,
-  addEvents: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
   return { eventList: state.fields };
 };
 
-export default connect(mapStateToProps, { addEvents })(factset);
+export default connect(mapStateToProps, { })(factset);

@@ -33,13 +33,13 @@ function RuleFirstStep(props) {
   } = useForm();
   const onSubmit = (data) => {
     // console.log(data);
-    setRuleFirstStep(data.ruleName, data.ruleDescription);
+    setRuleFirstStep(data.name, data.description);
     reset();
   };
 
   useEffect(() => {
     if (resetName !== "" && resetDescription !== "") {
-      reset({ ruleName: resetName, ruleDescription: resetDescription });
+      reset({ name: resetName, description: resetDescription });
     }
   }, [resetName, resetDescription]);
 
@@ -52,8 +52,8 @@ function RuleFirstStep(props) {
             <input
               type="text"
               className="form-control mb-1"
-              name={`ruleName`}
-              id={`ruleName-${type}`}
+              name={`name`}
+              id={`name-${type}`}
               placeholder="Enter Your Rule Name"
               ref={register({})}
             />
@@ -65,8 +65,8 @@ function RuleFirstStep(props) {
             <input
               type="text"
               className="form-control"
-              name={`ruleDescription`}
-              id={`ruleDescription-${type}`}
+              name={`description`}
+              id={`description-${type}`}
               placeholder="Enter Your Rule Description"
               ref={register({})}
             />

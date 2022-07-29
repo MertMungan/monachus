@@ -44,6 +44,7 @@ import {
 // REDUX
 import { connect } from "react-redux";
 import { fetchEvents, deleteEvents } from "../../../redux/actions/events/index";
+import { deleteRuleCategory } from '../../../redux/actions/ruleCategory';
 // REDUX
 
 // ** Styles
@@ -55,6 +56,7 @@ const Table = ({
   wizardOpen = false,
   setWizardOpen = () => {},
   setResetInfo = () => {},
+  deleteRuleCategory = () => {}
 }) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -102,17 +104,17 @@ const Table = ({
   const columns = [
     {
       name: "ID",
-      selector: (row) => row.categoryId,
+      selector: (row) => row.id,
       sortable: true,
     },
     {
       name: "Name",
-      selector: (row) => row.categoryName,
+      selector: (row) => row.name,
       sortable: true,
     },
     {
       name: "Description",
-      selector: (row) => row.categoryDescription,
+      selector: (row) => row.description,
       sortable: true,
     },
     // {
@@ -154,7 +156,7 @@ const Table = ({
             <Trash
               className="mr-1"
               size={15}
-              onClick={deleteEvents(row.eventId)}
+              onClick={() => deleteRuleCategory(row.id)}
             />
             <Edit
               size={15}
@@ -272,4 +274,4 @@ const mapStateToProps = (state) => {
   return { eventList: state.fields };
 };
 
-export default connect(mapStateToProps, { fetchEvents, deleteEvents })(Table);
+export default connect(mapStateToProps, { fetchEvents, deleteEvents, deleteRuleCategory })(Table);

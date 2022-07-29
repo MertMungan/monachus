@@ -9,11 +9,12 @@ const camelizeText = (text) => {
 
 export const convertToQueryBuilderFormat = (data = []) => {
   let queryBuilderObject = { fields: {} };
-  if (data.eventId) {
-    if (data.fields.length > 0) {
-      data.fields.map((field) => {
+  if (data.id) {
+    if (data.metadata?.length > 0) {
+      data.metadata.map((field) => {
         switch (field.factType) {
           case "string":
+            console.log("queryBuilderObject",queryBuilderObject)
             queryBuilderObject.fields[camelizeText(`${field.factDefination}`)] =
               {
                 label: `${field.factDefination}`,

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { Button } from "reactstrap";
 import { Link } from "react-router-dom";
 import errorImg from "@src/assets/images/pages/error.svg";

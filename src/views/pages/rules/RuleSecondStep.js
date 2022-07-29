@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
-import { Utils as QbUtils } from "react-awesome-query-builder";
 import { Label, FormGroup, Row, Col, Input, Form, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
@@ -32,17 +31,22 @@ function RuleSecondStep(props) {
     categoryData,
     fetchRuleCategory,
     resetInfo,
+    metaCategoryData,
+    metaEventData,
   } = props;
   const [categoryList, setCategoryList] = useState([]);
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+
   const onSubmit = (data) => {
-    if (resetInfo.ruleId) {
-      setRuleSecondStep(resetInfo.assignedEvent, resetInfo.assignedCategory);
+    console.log("data", data)
+    if (resetInfo.id) {
+      setRuleSecondStep(data.eventSelected, data.categorySelected);
     } else {
       setRuleSecondStep(data.eventSelected, data.categorySelected);
     }
@@ -54,11 +58,10 @@ function RuleSecondStep(props) {
   }, []);
 
   useEffect(() => {
-    if (categoryData.length > 0) {
-      setCategoryList(categoryData);
-      // console.log("categoryData", categoryData);
+    if (metaCategoryData.length > 0) {
+      setCategoryList(metaCategoryData);
     }
-  }, [categoryData]);
+  }, [metaCategoryData]);
 
   useEffect(() => {
     if (resetEvent !== "" && resetCategory !== "") {
@@ -69,6 +72,7 @@ function RuleSecondStep(props) {
     }
     setSelectedEvent(resetEvent);
   }, [resetEvent, resetCategory]);
+
 
   return (
     <Fragment>
@@ -86,21 +90,17 @@ function RuleSecondStep(props) {
               }}
             >
               <option hidden>Select Event</option>
-              {resetInfo.assignedEvent !== "" ? (
-                <option selected value={resetInfo.assignedEvent}>
-                  {
-                    eventsArray.find(
-                      (event) => event.eventId === resetInfo.assignedEvent
-                    )?.eventName
-                  }
-                </option>
-              ) : (
-                eventsArray.map((event, index) => (
-                  <option key={index} value={event.eventId}>
-                    {event.eventName}
-                  </option>
-                ))
-              )}
+              {resetInfo.assignedEvent !== "" ? 
+                metaEventData?.map((event, index) => (
+                    <option selected key={index} value={event.id}>
+                      {event.name}
+                    </option>
+                  ))
+                : metaEventData?.map((event, index) => (
+                    <option key={index} value={event.id}>
+                      {event.name}
+                    </option>
+                  ))}
             </select>
           </Col>
         </Row>
@@ -118,18 +118,13 @@ function RuleSecondStep(props) {
               defaultValue={resetCategory}
               // i need a default value for this for when user clicks on a row, it's category will be set automatically
             >
-              <option hidden>Select Category</option>
+              ;<option hidden>Select Category</option>
               {categoryList.length !== 0 ? (
-                categoryList.map(
-                  (category, index) => (
-                    // console.log("category", category),
-                    (
-                      <option key={index} value={category.categoryName}>
-                        {category.categoryName}
-                      </option>
-                    )
-                  )
-                )
+                categoryList.map((category, index) => (
+                  <option key={index} value={category.id}>
+                    {category.name}
+                  </option>
+                ))
               ) : (
                 <option selected value={resetCategory}>
                   {resetCategory}
@@ -198,7 +193,7 @@ RuleSecondStep.propTypes = {
   stepper: PropTypes.object,
   type: PropTypes.string,
   setRuleSecondStep: PropTypes.func,
-  resetEvent: PropTypes.string,
+  resetEvent: PropTypes.object,
   resetCategory: PropTypes.string,
   eventList: PropTypes.array,
   addRule: PropTypes.func,
@@ -207,10 +202,17 @@ RuleSecondStep.propTypes = {
   categoryData: PropTypes.array,
   fetchRuleCategory: PropTypes.func,
   resetInfo: PropTypes.object,
+  metaCategoryData: PropTypes.array,
+  metaEventData: PropTypes.array,
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields, categoryData: state.ruleCategoryReducer };
+  return {
+    eventList: state.fields,
+    categoryData: state.ruleCategoryReducer,
+    metaCategoryData: state.ruleCategoryReducer,
+    metaEventData: state.metaDataEventsReducer,
+  };
 };
 
 export default connect(mapStateToProps, { addRule, fetchRuleCategory })(

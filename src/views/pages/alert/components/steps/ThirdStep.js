@@ -36,7 +36,7 @@ export default function ThirdStep({ selectedAlert = {}, setWizardOpen = () => {}
           <Col xl={6} md={6}>
             <Card className="mb-4 mt-1" style={{ backgroundColor: "white" }}>
               <CardBody>
-                <ReactJson src={selectedAlert.fields[0]} theme="monokai" />
+                <ReactJson src={selectedAlert} theme="monokai" />
               </CardBody>
             </Card>
           </Col>

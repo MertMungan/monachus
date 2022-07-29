@@ -19,6 +19,8 @@ import {
   UncontrolledDropdown
 } from 'reactstrap'
 
+import { connect } from 'react-redux'
+
 const NotificationDropdown = () => {
   // ** Notification Array
   const notificationsArray = [
@@ -27,7 +29,8 @@ const NotificationDropdown = () => {
       subtitle: 'Won the monthly best seller badge.',
       title: (
         <Media tag='p' heading>
-          <span className='font-weight-bolder'>Congratulation Sam 🎉</span>winner!
+          <span className='font-weight-bolder'>Congratulation Sam 🎉</span>
+          winner!
         </Media>
       )
     },
@@ -46,13 +49,26 @@ const NotificationDropdown = () => {
       subtitle: 'MD Inc. order updated',
       title: (
         <Media tag='p' heading>
-          <span className='font-weight-bolder'>Revised Order 👋</span>&nbsp;checkout
+          <span className='font-weight-bolder'>Revised Order 👋</span>
+          &nbsp;checkout
         </Media>
       )
     },
     {
-      title: <h6 className='font-weight-bolder mr-auto mb-0'>System Notifications</h6>,
-      switch: <CustomInput type='switch' id='primary' name='primary' inline defaultChecked />
+      title: (
+        <h6 className='font-weight-bolder mr-auto mb-0'>
+          System Notifications
+        </h6>
+      ),
+      switch: (
+        <CustomInput
+          type='switch'
+          id='primary'
+          name='primary'
+          inline
+          defaultChecked
+        />
+      )
     },
     {
       avatarIcon: <X size={14} />,
@@ -60,7 +76,8 @@ const NotificationDropdown = () => {
       subtitle: 'USA Server is down due to hight CPU usage',
       title: (
         <Media tag='p' heading>
-          <span className='font-weight-bolder'>Server down</span>&nbsp;registered
+          <span className='font-weight-bolder'>Server down</span>
+          &nbsp;registered
         </Media>
       )
     },
@@ -70,7 +87,8 @@ const NotificationDropdown = () => {
       subtitle: 'Last month sales report generated',
       title: (
         <Media tag='p' heading>
-          <span className='font-weight-bolder'>Sales report</span>&nbsp;generated
+          <span className='font-weight-bolder'>Sales report</span>
+          &nbsp;generated
         </Media>
       )
     },
@@ -99,7 +117,12 @@ const NotificationDropdown = () => {
       >
         {notificationsArray.map((item, index) => {
           return (
-            <a key={index} className='d-flex' href='/' onClick={e => e.preventDefault()}>
+            <a
+              key={index}
+              className='d-flex'
+              href='/'
+              onClick={(e) => e.preventDefault()}
+            >
               <Media
                 className={classnames('d-flex', {
                   'align-items-start': !item.switch,
@@ -127,7 +150,9 @@ const NotificationDropdown = () => {
                     </Media>
                     <Media body>
                       {item.title}
-                      <small className='notification-text'>{item.subtitle}</small>
+                      <small className='notification-text'>
+                        {item.subtitle}
+                      </small>
                     </Media>
                   </Fragment>
                 ) : (
@@ -146,8 +171,16 @@ const NotificationDropdown = () => {
   /*eslint-enable */
 
   return (
-    <UncontrolledDropdown tag='li' className='dropdown-notification nav-item mr-25'>
-      <DropdownToggle tag='a' className='nav-link' href='/' onClick={e => e.preventDefault()}>
+    <UncontrolledDropdown
+      tag='li'
+      className='dropdown-notification nav-item mr-25'
+    >
+      <DropdownToggle
+        tag='a'
+        className='nav-link'
+        href='/'
+        onClick={(e) => e.preventDefault()}
+      >
         <Bell size={21} />
         <Badge pill color='danger' className='badge-up'>
           5
@@ -173,4 +206,4 @@ const NotificationDropdown = () => {
   )
 }
 
-export default NotificationDropdown
+export default connect(null, null)(NotificationDropdown)

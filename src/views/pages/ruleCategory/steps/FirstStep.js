@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useForm } from "react-hook-form";
-import { addRuleCategory } from "../../../../redux/actions/ruleCategory";
+import { addRuleCategory,updateRuleCategory } from "../../../../redux/actions/ruleCategory";
 import uuid from "react-uuid";
 
 import { Button, Label, Row, Col } from "reactstrap";
@@ -11,6 +11,7 @@ const FirstStep = ({
   wizardOpen = false,
   setWizardOpen = () => {},
   setCategory = () => {},
+  updateRuleCategory = () => {},
   resetInfo = {},
 }) => {
   const {
@@ -21,17 +22,24 @@ const FirstStep = ({
   } = useForm();
 
   const onSubmit = (data) => {
-    let categoryId = uuid();
-    let totalData = { ...data, categoryId };
-    setCategory(totalData);
+    if (resetInfo.id) {
+      let id = resetInfo.id 
+      let totalData = { ...data, id};
+      updateRuleCategory(totalData)
+    } else {
+      let id = uuid();
+      let totalData = { ...data, id };
+  
+      addRuleCategory(totalData);
+    }
     setWizardOpen(!wizardOpen);
   };
 
   useEffect(() => {
-    if (resetInfo.categoryId) {
+    if (resetInfo.id) {
       reset({
-        categoryName: resetInfo.categoryName,
-        categoryDescription: resetInfo.categoryDescription,
+        name: resetInfo.name,
+        description: resetInfo.description,
       });
     }
   }, [resetInfo]);
@@ -45,7 +53,7 @@ const FirstStep = ({
               type="text"
               className="form-control textCustomClass mb-1"
               placeholder="Category Name"
-              name="categoryName"
+              name="name"
               ref={register({ required: true })}
             />
             <h5>Category Description</h5>
@@ -53,7 +61,7 @@ const FirstStep = ({
               type="text"
               className="form-control textCustomClass"
               placeholder="Category Description"
-              name="categoryDescription"
+              name="description"
               ref={register({ required: true })}
             />
           </Col>
@@ -85,4 +93,4 @@ const FirstStep = ({
 const mapStateToProps = (state) => {
   return { categoryData: state.ruleCategoryReducer };
 };
-export default connect(mapStateToProps, { addRuleCategory })(FirstStep);
+export default connect(mapStateToProps, { addRuleCategory,updateRuleCategory })(FirstStep);

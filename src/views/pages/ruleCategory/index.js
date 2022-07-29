@@ -6,10 +6,9 @@ import BreadCrumbs from "@components/breadcrumbs";
 import FirstStep from "./steps/FirstStep";
 import Wizard from "@components/wizard";
 
-import { addRuleCategory } from "../../../redux/actions/ruleCategory";
+import { addRuleCategory,fetchRuleCategory } from "../../../redux/actions/ruleCategory";
 import { add } from "lodash";
-
-const Index = ({ categoryData = [], addRuleCategory = () => {} }) => {
+const Index = ({ categoryData = [], addRuleCategory = () => {},fetchRuleCategory  = () => {}}) => {
   const [categoryList, setCategoryList] = useState([]);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [stepper, setStepper] = useState(null);
@@ -20,7 +19,11 @@ const Index = ({ categoryData = [], addRuleCategory = () => {} }) => {
       setCategoryList(categoryData);
     }
   }, [categoryData]);
+useEffect(() => {
+  fetchRuleCategory()
+}, [])
 
+console.log("categoryData",categoryData)
   const ref = useRef(null);
 
   useEffect(() => {
@@ -77,4 +80,4 @@ const Index = ({ categoryData = [], addRuleCategory = () => {} }) => {
 const mapStateToProps = (state) => {
   return { categoryData: state.ruleCategoryReducer };
 };
-export default connect(mapStateToProps, { addRuleCategory })(Index);
+export default connect(mapStateToProps, { addRuleCategory,fetchRuleCategory })(Index);

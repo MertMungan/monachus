@@ -48,7 +48,7 @@ const DashboardRoutes = [
   },
   {
     path: '/monachus/analytics',
-    component: lazy(() => import('../../views/pages/misc/WIP')),
+    component: lazy(() => import('../../views/dashboard/ecommerce')),
     exact: true,
     meta: {
       action: 'read',

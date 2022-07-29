@@ -11,6 +11,8 @@ import {
   addRule,
   updateRule,
 } from "../../../redux/actions/rules";
+import { fetchMetaDataRules, addMetaDataRules,updateMetaDataRule} from '../../../redux/actions/metaDataRules'
+
 // ** Roles Components
 import classnames from "classnames";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -26,59 +28,59 @@ import uuid from "react-uuid";
 
 const Roles = ({
   eventList = [],
-  fetchEvents = () => {},
   queryList = [],
-  fetchRule = () => {},
   addRule = () => {},
-  fetchAllRules = () => {},
   updateRule = () => {},
+  fetchMetaDataRules = () => {},
+  metaRuleData = [],
+  addMetaDataRules = () => {},
+  updateMetaDataRule = () => {}
 }) => {
   const [rulesCategory, setRulesCategory] = useState([]);
   const [eventsArray, setEventsArray] = useState([]);
   const [listData, setListData] = useState([]);
   const [openSidebar, setOpenSidebar] = useState(false);
-  const [tableCategories, setTableCategories] = useState([]);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [resetInfo, setResetInfo] = useState({
-    ruleId: "",
-    ruleName: "",
-    ruleDescription: "",
+    id: "",
+    name: "",
+    description: "",
     assignedEvent: "",
     assignedCategory: "",
     builderInfo: [],
     configuration: "",
   });
   const [ruleInfo, setRuleInfo] = useState({
-    ruleId: "",
-    ruleName: "",
-    ruleDescription: "",
+    id: "",
+    name: "",
+    description: "",
     assignedEvent: "",
     assignedCategory: "",
     builderInfo: [],
     configuration: "",
   });
-  const [selectedEvent, setSelectedEvent] = useState({});
-  const [selectedRule, setSelectedRule] = useState({});
-  const [selectedCategory, setSelectedCategory] = useState({});
+  const [selectedEvent, setSelectedEvent] = useState("");
+  const [selectedRule, setSelectedRule] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [stepper, setStepper] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState("");
   const ref = useRef(null);
 
   useEffect(() => {
-    fetchAllRules();
-    fetchEvents();
+    fetchMetaDataRules();
   }, []);
 
   useEffect(() => {
-    fetchAllRules();
-  }, [wizardOpen]);
+    setListData(metaRuleData)
+  }, [metaRuleData])
+  
 
   useEffect(() => {
-    if (resetInfo.ruleId !== "") {
+    if (resetInfo.id !== "") {
       setRuleInfo({
-        ruleId: resetInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: resetInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
@@ -106,30 +108,30 @@ const Roles = ({
 
   useEffect(() => {
     if (
-      ruleInfo.ruleId !== "" &&
-      resetInfo.ruleId === "" &&
-      ruleInfo.ruleName !== "" &&
-      ruleInfo.ruleDescription !== "" &&
+      ruleInfo.id !== "" &&
+      resetInfo.id === "" &&
+      ruleInfo.name !== "" &&
+      ruleInfo.description !== "" &&
       ruleInfo.assignedEvent !== "" &&
       ruleInfo.assignedCategory !== "" &&
       ruleInfo.builderInfo?.length > 0 &&
       ruleInfo.configuration !== ("" || {})
     ) {
       addRule(
-        ruleInfo.ruleId,
+        ruleInfo.id,
         ruleInfo.assignedEvent,
-        ruleInfo.ruleName,
-        ruleInfo.ruleDescription,
+        ruleInfo.name,
+        ruleInfo.description,
         ruleInfo.assignedCategory,
         ruleInfo.builderInfo[0],
         ruleInfo.builderInfo[1]
       );
     } else if (
-      ruleInfo.ruleId !== "" &&
-      resetInfo.ruleId !== "" &&
-      ruleInfo.ruleId === resetInfo.ruleId &&
-      ruleInfo.ruleName !== "" &&
-      ruleInfo.ruleDescription !== "" &&
+      ruleInfo.id !== "" &&
+      resetInfo.id !== "" &&
+      ruleInfo.id === resetInfo.id &&
+      ruleInfo.name !== "" &&
+      ruleInfo.description !== "" &&
       ruleInfo.assignedEvent !== "" &&
       ruleInfo.assignedCategory !== "" &&
       ruleInfo.builderInfo?.length > 0 &&
@@ -137,19 +139,19 @@ const Roles = ({
       ruleInfo.configuration !== ("" || {})
     ) {
       updateRule(
-        ruleInfo.ruleId,
-        ruleInfo.ruleName,
-        ruleInfo.ruleDescription,
+        ruleInfo.id,
+        ruleInfo.name,
+        ruleInfo.description,
         ruleInfo.assignedCategory,
         ruleInfo.builderInfo[0],
         ruleInfo.builderInfo[1]
       );
     } else if (
-      ruleInfo.ruleId !== "" &&
-      resetInfo.ruleId !== "" &&
-      ruleInfo.ruleId === resetInfo.ruleId &&
-      ruleInfo.ruleName !== "" &&
-      ruleInfo.ruleDescription !== "" &&
+      ruleInfo.id !== "" &&
+      resetInfo.id !== "" &&
+      ruleInfo.id === resetInfo.id &&
+      ruleInfo.name !== "" &&
+      ruleInfo.description !== "" &&
       ruleInfo.assignedEvent !== "" &&
       ruleInfo.assignedCategory !== "" &&
       ruleInfo.builderInfo.length > 0 &&
@@ -157,22 +159,22 @@ const Roles = ({
       ruleInfo.configuration !== ("" || {})
     ) {
       updateRule(
-        ruleInfo.ruleId,
-        ruleInfo.ruleName,
-        ruleInfo.ruleDescription,
+        ruleInfo.id,
+        ruleInfo.name,
+        ruleInfo.description,
         ruleInfo.assignedCategory,
-        resetInfo.builderInfo[0],
-        ruleInfo.builderInfo[1]
+        resetInfo?.builderInfo,
+        ruleInfo?.builderInfo
       );
     }
   }, [ruleInfo]);
 
   const handleRuleFirstStep = (name, desc) => {
-    if (ruleInfo.ruleId) {
+    if (ruleInfo.id) {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: name,
-        ruleDescription: desc,
+        id: ruleInfo.id,
+        name: name,
+        description: desc,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
@@ -180,9 +182,9 @@ const Roles = ({
       });
     } else {
       setRuleInfo({
-        ruleId: uuid(),
-        ruleName: name,
-        ruleDescription: desc,
+        id: uuid(),
+        name: name,
+        description: desc,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
@@ -192,11 +194,12 @@ const Roles = ({
   };
 
   const handleRuleSecondStep = (event, category) => {
-    if (ruleInfo.ruleId) {
+    console.log("event", event)
+    if (ruleInfo.id) {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: ruleInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: event,
         assignedCategory: category,
         builderInfo: ruleInfo.builderInfo,
@@ -204,9 +207,9 @@ const Roles = ({
       });
     } else {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: ruleInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: event,
         assignedCategory: category,
         builderInfo: ruleInfo.builderInfo,
@@ -216,11 +219,11 @@ const Roles = ({
   };
 
   const handleRuleThirdStep = (builderInfo) => {
-    if (ruleInfo.ruleId) {
+    if (ruleInfo.id) {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: ruleInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: builderInfo,
@@ -228,9 +231,9 @@ const Roles = ({
       });
     } else {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: ruleInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: builderInfo,
@@ -240,11 +243,11 @@ const Roles = ({
   };
 
   const handleRuleFourthStep = (configuration) => {
-    if (ruleInfo.ruleId) {
+    if (ruleInfo.id) {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: ruleInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
@@ -252,9 +255,9 @@ const Roles = ({
       });
     } else {
       setRuleInfo({
-        ruleId: ruleInfo.ruleId,
-        ruleName: ruleInfo.ruleName,
-        ruleDescription: ruleInfo.ruleDescription,
+        id: ruleInfo.id,
+        name: ruleInfo.name,
+        description: ruleInfo.description,
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
@@ -263,6 +266,7 @@ const Roles = ({
     }
   };
 
+  console.log("ruleInfo",ruleInfo)
   const steps = [
     {
       id: "rule-definition",
@@ -273,8 +277,8 @@ const Roles = ({
           setRuleFirstStep={handleRuleFirstStep}
           stepper={stepper}
           type="wizard-horizontal"
-          resetName={resetInfo.ruleName}
-          resetDescription={resetInfo.ruleDescription}
+          resetName={resetInfo.name}
+          resetDescription={resetInfo.description}
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
         />
@@ -314,14 +318,14 @@ const Roles = ({
             stepper={stepper}
             setWizardOpen={setWizardOpen}
             eventsArray={eventsArray}
-            ruleId={ruleInfo.ruleId}
-            ruleName={ruleInfo.ruleName}
-            ruleDescription={ruleInfo.ruleDescription}
+            id={ruleInfo.id}
+            name={ruleInfo.name}
+            description={ruleInfo.description}
             assignedEvent={selectedEvent}
             assignedCategory={ruleInfo.assignedCategory}
-            resetId={resetInfo.ruleId}
-            resetName={resetInfo.ruleName}
-            resetDescription={resetInfo.ruleDescription}
+            resetId={resetInfo.id}
+            resetName={resetInfo.name}
+            resetDescription={resetInfo.description}
             resetEvent={ruleInfo.assignedEvent}
             resetCategory={resetInfo.assignedCategory}
             resetInfo={resetInfo}
@@ -425,114 +429,20 @@ const Roles = ({
     ],
   };
 
+  
+  useEffect(() => {
+    if (ruleInfo.builderInfo.length > 0) {
+      if (metaRuleData.find((item) => item.id === ruleInfo.id)) {
+        updateMetaDataRule(ruleInfo)
+    } else {
+      addMetaDataRules(ruleInfo)
+    }
+    }
+  }, [ruleInfo])
+
   return (
     <Fragment>
       <BreadCrumbs breadCrumbParent="CEP" breadCrumbActive="Rules" />
-
-      {/*   <Fragment>
-                <Row className="px-0 ">
-          {rulesCategory?.map((item, index) => {
-            if (item === "") {
-              return (
-                <Col key={index} xl={8} md={6}>
-                  <Card className="mb-4">
-                    <CardBody>
-                      <Row>
-                        <Col xs="3">
-                          <CardTitle className="mb-1">Earnings</CardTitle>
-                          <div className="font-small-2">This Month</div>
-                          <h5 className="mb-1">$4055.56</h5>
-                          <CardText className="text-muted font-small-2">
-                            <span className="font-weight-bolder">68.2%</span>
-                            <span> more earnings than last month.</span>
-                          </CardText>
-                        </Col>
-                        <Col xs="3">
-                          <Chart
-                            options={options}
-                            series={[53, 16, 31]}
-                            type="donut"
-                            height={150}
-                          />
-                        </Col>
-                        <Col xs="3">
-                          <Chart
-                            options={options}
-                            series={[53, 16, 31]}
-                            type="donut"
-                            height={150}
-                          />
-                        </Col>
-                        <Col xs="3">
-                          <Chart
-                            options={options}
-                            series={[53, 16, 31]}
-                            type="donut"
-                            height={150}
-                          />
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Card>
-                </Col>
-              );
-            } else {
-              return (
-                <Col key={index} xl={4} md={6}>
-                  <Card>
-                    <CardBody>
-                      <div className="d-flex justify-content-between">
-                        <h4>{capitalizeFirst(item)}</h4>
-
-                        <AvatarGroup
-                          //avatar group's data should be the picData's objects users property
-                          data={
-                            picData.map((item) => {
-                              return item.users;
-                            })[index]
-                          }
-                        />
-                      </div>
-                      <div className="d-flex  mt-3 ">
-                        <span>{`Total ${
-                          queryList.data?.filter(
-                            (rule) => rule.category === item
-                          ).length
-                        } Rules`}</span>
-                      </div>
-                      <Row className="pl-0 mt-3">
-                        <Col>
-                          <Link
-                            className="role-edit-modal"
-                            onClick={(e) =>
-                              setListData(
-                                queryList.data?.filter(
-                                  (rule) => rule.category === item
-                                )
-                              )
-                            }
-                          >
-                            <small className="fw-bolder">List Details</small>
-                          </Link>
-                        </Col>
-                        <Col style={{ textAlign: "right" }}>
-                          <Link
-                            to=""
-                            className="text-body"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            <Copy className="font-medium-5" />
-                          </Link>
-                        </Col>
-                      </Row>
-                    </CardBody>
-                  </Card>
-                </Col>
-              );
-            }
-          })}
-        </Row> 
-      </Fragment> */}
       {wizardOpen === true ? (
         <Wizard
           type="horizontal"
@@ -586,7 +496,7 @@ const Roles = ({
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields, queryList: state.query };
+  return { eventList: state.fields, queryList: state.query, metaRuleData: state.metaDataRulesReducer };
 };
 
 export default connect(mapStateToProps, {
@@ -595,4 +505,7 @@ export default connect(mapStateToProps, {
   fetchAllRules,
   addRule,
   updateRule,
+  fetchMetaDataRules,
+  addMetaDataRules,
+  updateMetaDataRule,
 })(Roles);

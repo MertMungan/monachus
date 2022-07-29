@@ -89,6 +89,7 @@ const Content = ({ size: { width } }) => {
   }
   const toggleWidgetLayout = () => {
     if (layOutState.h === 6) {
+      
       setLayOutState({ w: 6, h: 12, x: 0, y: Infinity })
     } else {
       setLayOutState({ w: 6, h: 6, x: 0, y: Infinity })

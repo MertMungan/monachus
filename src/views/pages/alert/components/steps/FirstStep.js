@@ -39,14 +39,14 @@ const FirstStep = ({
           <Col xl={4} md={4}>
             <Card className="mb-4 mt-1" style={{ backgroundColor: "white" }}>
               <CardBody>
-                <CardText>Alert ID: {selectedAlert.eventID}</CardText>
+                <CardText>Alert ID: {selectedAlert.id}</CardText>
                 <CardText>
-                  Created Date Time: {selectedAlert.createdDate}
+                  Created Date Time: {selectedAlert.alarm_datetime}
                 </CardText>
-                <CardText>Event Name: {eventName}</CardText>
-                <CardText>Rule ID: {selectedAlert.id}</CardText>
+                <CardText>Event Name: {selectedAlert.event_type}</CardText>
+                <CardText>Rule ID: {selectedAlert.rule_id}</CardText>
                 <CardText>Rule Name: {selectedAlert.name}</CardText>
-                <CardText>Rule Category: {selectedAlert.category}</CardText>
+                <CardText>Alert Statu: {selectedAlert.statu}</CardText>
               </CardBody>
             </Card>
           </Col>

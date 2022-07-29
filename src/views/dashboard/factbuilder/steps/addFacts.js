@@ -44,6 +44,7 @@ function addFacts(props) {
     showFieldsTable,
     setShowFieldsTable,
     resetEvent,
+    factInfo
   } = props;
   const [selectedType, setSelectedType] = useState("");
   const [isNumberSlider, setIsNumberSlider] = useState(false);
@@ -65,72 +66,11 @@ function addFacts(props) {
   } = useForm();
 
   useEffect(() => {
-    setName(eventName);
-  }, [eventName]);
+    setName(name);
+  }, [name]);
 
   const onSubmit = (data) => {
     setFieldsForTable(data);
-    /*  if (fieldsForTable.length > 0) {
-      setFactFields(fieldsForTable);
-    } */
-    /* setFieldsForTable(data);
-      
-      setFactFields(data);
-      setCurrentArrayList([
-        {
-          factDefinition: data.factDefinition,
-          factType: data.factType,
-        },
-      ]);
-      setWizardOpen(false); */
-
-    /*  let found = false;
-    // we need to check if the data passed to onSubmit as an object matches other objects in the fieldList's fields array
-    for (let i = 0; i < fieldList.length; i++) {
-      fieldList[i].fields.forEach((field) => {
-        if (field.factDefination === data.factDefination) {
-          //  debugger;
-          found = true;
-        }
-      });
-    }
-
-    // if found is true, then that means the fact data is already in the fieldList's fields array and we need to prevent it from being added again
-    if (found) {
-      toast.error("Fact already exists");
-      reset();
-      return;
-    } else {
-      // if found is false, then we need to add the fact data to the fieldList's fields array
-      if (selectedFact.eventId) {
-        if (currentArrayList.length > 0) {
-          updateEvents(selectedFact.eventId, {
-            factDefination: data.factDefination,
-            factType: data.factType,
-            factArrayList: currentArrayList,
-          });
-        } else if (currentArrayList.length === 0) {
-          updateEvents(selectedFact.eventId, data);
-        } else {
-          return;
-        }
-      } else {
-        if (currentArrayList.length > 0) {
-          updateEvents(createdEvent, {
-            factDefination: data.factDefination,
-            factType: data.factType,
-            factArrayList: currentArrayList,
-          });
-        } else if (currentArrayList.length === 0) {
-          updateEvents(createdEvent, data);
-        } else {
-          return;
-        }
-      }
-    } */
-    // then after the check, we need to reset the form
-    reset();
-    //after everything, a fact that wasn't already in the fieldList's fields array is added twice and then for four times. why?
   };
 
   const detailsOfTheType = () => {
@@ -268,25 +208,25 @@ function addFacts(props) {
             onChange={(e) => {
               if (e.target.value === "") return;
               setSelectedFact(
-                fieldList.find((field) => field.eventId === e.target.value)
+                fieldList.find((field) => field.id === e.target.value)
               );
             }}
           >
             <option value="">Select Event Set</option>
             {/*  {fieldList?.map((field) => (
               
-              <option key={field.eventId} value={field.eventId}>
-                {field.eventName}
+              <option key={field.id} value={field.id}>
+                {field.name}
               </option>
             ))} */}
 
             {fieldList?.map((field) => (
               <option
-                key={field.eventId}
-                value={field.eventId}
-                selected={field.eventId === createdEvent}
+                key={field.id}
+                value={field.id}
+                selected={field.id === createdEvent}
               >
-                {field.eventName}
+                {field.name}
               </option>
             ))}
           </select>
@@ -395,7 +335,8 @@ function addFacts(props) {
             setFields={setFactFields}
             setWizardOpen={setWizardOpen}
             resetFields={resetEvent.fields}
-          />
+            factInfo = {factInfo}
+            />
         )}
       </Form>
     </Fragment>

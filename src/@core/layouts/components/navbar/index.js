@@ -23,9 +23,12 @@ import { connect } from 'react-redux'
 import {
   getUserWithClientRoles,
   fetchKeycloakUsers,
-  fetchKeycloakUsersClientRoles
-} from '../../../../redux/actions/keycloakUsers'
-import { getUserAccount } from '../../../../redux/actions/userAccountInfo'
+  fetchKeycloakUsersClientRoles,
+} from "../../../../redux/actions/keycloakUsers";
+import { getUserAccount } from "../../../../redux/actions/userAccountInfo"
+import { fetchMetaDataRules } from "../../../../redux/actions/metaDataRules"
+import { fetchMetaDataEvents } from "../../../../redux/actions/metaDataEvents"
+import { fetchRuleCategory } from "../../../../redux/actions/ruleCategory"
 
 const ThemeNavbar = (props) => {
   // ** Props
@@ -36,7 +39,10 @@ const ThemeNavbar = (props) => {
     getUserWithClientRoles,
     fetchKeycloakUsers,
     fetchKeycloakUsersClientRoles,
-    getUserAccount
+    getUserAccount,
+    fetchMetaDataRules,
+    fetchMetaDataEvents,
+    fetchRuleCategory
   } = props
   const { keycloak, initialized } = useKeycloak()
   const [userData, setUserData] = useState([])
@@ -77,12 +83,19 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if (userRealm) {
-      getUserWithClientRoles()
-      fetchKeycloakUsers()
-      fetchKeycloakUsersClientRoles()
-      getUserAccount()
-    }
-  }, [userRealm])
+    getUserWithClientRoles();
+    fetchKeycloakUsers();
+    fetchKeycloakUsersClientRoles();
+    getUserAccount();
+  }
+  }, [userRealm]);
+
+  useEffect(() => {
+    fetchMetaDataRules();
+    fetchMetaDataEvents();
+    fetchRuleCategory();
+  }, [])
+  
 
   useEffect(() => {
     if (userData && userProfile) {
@@ -142,7 +155,7 @@ const ThemeNavbar = (props) => {
           </NavLink>
         </NavItem>
         {/*<NavbarSearch />*/}
-        <CartDropdown />
+        {/* <CartDropdown /> */}
         <NotificationDropdown />
         <UserDropdown />
       </ul>
@@ -159,7 +172,10 @@ ThemeNavbar.propTypes = {
   getUserWithClientRoles: PropTypes.func,
   fetchKeycloakUsers: PropTypes.func,
   fetchKeycloakUsersClientRoles: PropTypes.func,
-  getUserAccount: PropTypes.func
+  getUserAccount: PropTypes.func,
+  fetchRuleCategory:PropTypes.func,
+  fetchMetaDataEvents:PropTypes.func,
+  fetchMetaDataRules:PropTypes.func,
 }
 
 const mapStateToProps = (state) => {
@@ -172,6 +188,9 @@ export default connect(null, {
   getUserWithClientRoles,
   fetchKeycloakUsers,
   fetchKeycloakUsersClientRoles,
-  getUserAccount
-})(ThemeNavbar)
+  getUserAccount,
+  fetchMetaDataRules,
+  fetchMetaDataEvents,
+  fetchRuleCategory,
+})(ThemeNavbar);
 // export default ThemeNavbar

@@ -22,50 +22,51 @@ import uuid from "react-uuid";
 import { connect } from "react-redux";
 import {
   fetchEvents,
-  addEvents,
   updateEvents,
   deleteEvents,
 } from "../../../redux/actions/events/index";
+
+import {fetchMetaDataEvents,addMetaDataEvents,updateMetaDataEvents} from '../../../redux/actions/metaDataEvents'
 // REDUX
 
 function FactBuilder(props) {
-  const { eventList, addEvents, fetchEvents, deleteEvents, updateEvents } =
+  const { eventList, fetchEvents, deleteEvents, updateEvents, fetchMetaDataEvents, metaDataEvents,addMetaDataEvents,updateMetaDataEvents } =
     props;
   const [stepper, setStepper] = useState(null);
   const [currentFieldData, setCurrentFieldData] = useState([]);
   const [factInfo, setFactInfo] = useState({
-    eventId: "",
-    eventName: "",
-    eventDescription: "",
-    eventCategory: "",
+    id: "",
+    name: "",
+    description: "",
     fields: [],
   });
   const [resetInfo, setResetInfo] = useState({
-    eventId: "",
-    eventName: "",
-    eventDescription: "",
-    eventCategory: "",
+    id: "",
+    name: "",
+    description: "",
     fields: [],
   });
   const [wizardOpen, setWizardOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState("");
   const [showFieldsTable, setShowFieldsTable] = useState(false);
   const [resetEvent, setResetEvent] = useState({});
+
+
   const seteventName = (name) => {
     if (selectedEvent) {
+      console.log("SELECTED EVENT ÇALIŞIYOR")
       setFactInfo({
-        eventId: selectedEvent.eventId,
-        eventName: name,
-        eventDescription: selectedEvent.eventDescription,
-        eventCategory: selectedEvent.eventCategory,
-        fields: selectedEvent.fields,
+        id: selectedEvent.id,
+        name: name,
+        description: selectedEvent.description,
+        fields: selectedEvent.metadata,
       });
     } else {
+      console.log("FACT INFO ÇALIŞIYOR")
       setFactInfo({
-        eventId: uuid(),
-        eventName: name,
-        eventDescription: factInfo.eventDescription,
-        eventCategory: factInfo.eventCategory,
+        id: uuid(),
+        name: name,
+        description: factInfo.description,
         fields: factInfo.fields,
       });
     }
@@ -73,18 +74,16 @@ function FactBuilder(props) {
   const setEventDescription = (description) => {
     if (selectedEvent) {
       setFactInfo({
-        eventId: selectedEvent.eventId,
-        eventName: selectedEvent.eventName,
-        eventDescription: description,
-        eventCategory: selectedEvent.eventCategory,
-        fields: selectedEvent.fields,
+        id: selectedEvent.id,
+        name: factInfo.name,
+        description: description,
+        fields: factInfo.fields,
       });
     } else {
       setFactInfo({
-        eventId: factInfo.eventId,
-        eventName: factInfo.eventName,
-        eventDescription: description,
-        eventCategory: factInfo.eventCategory,
+        id: factInfo.id,
+        name: factInfo.name,
+        description: description,
         fields: factInfo.fields,
       });
     }
@@ -92,18 +91,16 @@ function FactBuilder(props) {
   const setFactFields = (fields) => {
     if (selectedEvent) {
       setFactInfo({
-        eventId: selectedEvent.eventId,
-        eventName: selectedEvent.eventName,
-        eventDescription: selectedEvent.eventDescription,
-        eventCategory: selectedEvent.eventCategory,
+        id: selectedEvent.id,
+        name: factInfo.name,
+        description: factInfo.description,
         fields: fields,
       });
     } else {
       setFactInfo({
-        eventId: factInfo.eventId,
-        eventName: factInfo.eventName,
-        eventDescription: factInfo.eventDescription,
-        eventCategory: factInfo.eventCategory,
+        id: factInfo.id,
+        name: factInfo.name,
+        description: factInfo.description,
         fields: fields,
       });
     }
@@ -123,18 +120,19 @@ function FactBuilder(props) {
       );
     }
   };
-  useEffect(() => {}, [resetInfo]);
+
+
   const fieldsMainData = () => {
     let data = [];
     eventList?.forEach((field) => {
       data.push({
-        title: <h6 key={field.eventId}>{field.eventName}</h6>,
+        title: <h6 key={field.id}>{field.name}</h6>,
         content: (
-          <Card key={field.eventId}>
+          <Card key={field.id}>
             <CardBody>
               <CardTitle>
                 <h6 className="mb-2 text-muted">
-                  Description: {field.eventDescription}
+                  Description: {field.description}
                 </h6>
               </CardTitle>
               <CardSubtitle tag="h6" className="mb-2 text-muted">
@@ -144,7 +142,7 @@ function FactBuilder(props) {
             </CardBody>
             <CardBody>
               <Button
-                onClick={() => deleteEvents(field.eventId)}
+                onClick={() => deleteEvents(field.id)}
                 color="primary"
                 outline
               >
@@ -162,25 +160,24 @@ function FactBuilder(props) {
     const userIdLocal = JSON.parse(localStorage.getItem("userId"));
     const eventIdLocal = localStorage.getItem("eventID");
     if (userIdLocal.userId) {
-      //check if factInfo's eventName, eventDescription, fields are empty
+      //check if factInfo's name, description, fields are empty
       if (
         selectedEvent === "" &&
-        factInfo.eventId !== "" &&
-        factInfo.eventName !== "" &&
-        factInfo.eventDescription !== "" &&
+        factInfo.id !== "" &&
+        factInfo.name !== "" &&
+        factInfo.description !== "" &&
         factInfo.fields?.length !== 0
       ) {
-        addEvents(userIdLocal.userId, factInfo);
       } else if (
         selectedEvent !== "" &&
-        factInfo.eventId !== "" &&
-        factInfo.eventName !== "" &&
-        factInfo.eventDescription !== "" &&
+        factInfo.id !== "" &&
+        factInfo.name !== "" &&
+        factInfo.description !== "" &&
         factInfo.fields?.length !== 0
       ) {
         updateEvents(
-          factInfo.eventId,
-          factInfo.fields.map((item) => {
+          factInfo?.id,
+          factInfo.fields?.map((item) => {
             return {
               factDefination: item.factDefination,
               factType: item.factType,
@@ -200,8 +197,8 @@ function FactBuilder(props) {
 
   useEffect(() => {
     fetchEvents();
+    fetchMetaDataEvents()
   }, []);
-
   const ref = useRef(null);
 
   useEffect(() => {
@@ -209,6 +206,17 @@ function FactBuilder(props) {
       setResetEvent(resetInfo);
     }
   }, [resetInfo]);
+
+  useEffect(() => {    
+    if (factInfo.fields?.length > 0) {
+      if (metaDataEvents.find((item) => item.id === factInfo.id)) {
+        updateMetaDataEvents(factInfo)
+      } else {
+        addMetaDataEvents(factInfo)
+      }
+    }
+  }, [factInfo])
+  
   const steps = [
     {
       id: "fact-details",
@@ -219,7 +227,7 @@ function FactBuilder(props) {
           seteventName={seteventName}
           stepper={stepper}
           type="wizard-horizontal"
-          resetName={resetInfo.eventName}
+          resetName={resetInfo.name}
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
         />
@@ -235,7 +243,7 @@ function FactBuilder(props) {
           stepper={stepper}
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
-          resetDescription={resetInfo.eventDescription}
+          resetDescription={resetInfo.description}
           type="wizard-horizontal"
         />
       ),
@@ -251,11 +259,12 @@ function FactBuilder(props) {
           type="wizard-horizontal"
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
-          createdEvent={factInfo.eventId}
+          createdEvent={factInfo.id}
           resetEvent={resetEvent}
-          eventName={factInfo.eventName}
+          eventName={factInfo.name}
           showFieldsTable={showFieldsTable}
           setShowFieldsTable={setShowFieldsTable}
+          factInfo = {factInfo}
         />
       ),
     },
@@ -277,7 +286,7 @@ function FactBuilder(props) {
         />
       ) : (
         <EventTable
-          listData={eventList}
+          listData={metaDataEvents}
           setResetInfo={setResetInfo}
           setWizardOpen={setWizardOpen}
           wizardOpen={wizardOpen}
@@ -290,19 +299,24 @@ function FactBuilder(props) {
 }
 FactBuilder.propTypes = {
   eventList: PropTypes.array,
-  addEvents: PropTypes.func,
+  metaDataEvents: PropTypes.array,
   fetchEvents: PropTypes.func,
   deleteEvents: PropTypes.func,
   updateEvents: PropTypes.func,
+  fetchMetaDataEvents: PropTypes.func,
+  addMetaDataEvents: PropTypes.func,
+  updateMetaDataEvents: PropTypes.func,
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields };
+  return { eventList: state.fields, metaDataEvents: state.metaDataEventsReducer };
 };
 
 export default connect(mapStateToProps, {
-  addEvents,
   fetchEvents,
   updateEvents,
   deleteEvents,
+  fetchMetaDataEvents,
+  addMetaDataEvents,
+  updateMetaDataEvents,
 })(FactBuilder);

@@ -51,6 +51,7 @@ const FieldsTable = ({
   eventName = "",
   setFields = () => {},
   resetFields = [],
+  factInfo = [],
 }) => {
   const [searchValue, setSearchValue] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
@@ -58,13 +59,22 @@ const FieldsTable = ({
   const [listBilgisi, setListBilgisi] = useState([]);
 
   useEffect(() => {
+  
+    if (factInfo.fields?.length > 0) {
+      setListBilgisi(factInfo.fields);
+    }
+  }, [factInfo])
+
+
+  useEffect(() => {
     if (resetFields.length === 0 && listData) {
       // push listData to listBilgisi while keeping the previous state
       let list = [...listBilgisi, listData];
       // if the first element of the list is an empty array, remove it
-      if (list[0].length === 0) {
-        list.shift();
-      }
+      // if (list[0].length === 0) {
+      //   list.shift();
+      // }
+      
       setListBilgisi(list);
     } else if (resetFields.length !== 0 && listData) {
       let mapped = resetFields.map((item) => {
@@ -82,33 +92,12 @@ const FieldsTable = ({
       });
       setListBilgisi(list);
     }
-  }, [listData, resetFields]);
+  }, [listData]);
 
-  const handleFilter = (e) => {
-    const value = e.target.value;
-    let updatedData = [];
-    setSearchValue(value);
 
-    if (value.length) {
-      updatedData = listBilgisi?.filter((item) => {
-        const startsWith =
-          item.factDefination.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.factType.toLowerCase().startsWith(value.toLowerCase());
 
-        const includes =
-          item.factDefination.toLowerCase().includes(value.toLowerCase()) ||
-          item.factType.toLowerCase().includes(value.toLowerCase());
 
-        if (startsWith) {
-          return startsWith;
-        } else if (!startsWith && includes) {
-          return includes;
-        } else return null;
-      });
-      setFilteredData(updatedData);
-      setSearchValue(value);
-    }
-  };
+
 
   const columns = [
     {
@@ -180,7 +169,7 @@ const FieldsTable = ({
     <Fragment>
       <Card>
         <CardHeader className="flex-md-row flex-column align-md-items-center align-items-start border-bottom">
-          <CardTitle tag="h4">{eventName}</CardTitle>
+          <CardTitle tag="h4">{name}</CardTitle>
         </CardHeader>
         <Row className="justify-content-end mx-0">
           <Col
