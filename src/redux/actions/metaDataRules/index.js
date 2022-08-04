@@ -25,6 +25,7 @@ export const addMetaDataRules = (metaRuleData = []) => async (dispatch, getState
         "metadata": metaRuleData.builderInfo[0],
         "jsonlogic": metaRuleData.builderInfo[1].logic,
         "assigned_event": metaRuleData.assignedEvent,
+        "default_actions": metaRuleData.totalData,
         "enabled": true,
         "valid_from": "2022-07-21T15:35:38.868899",
         "valid_thru": null

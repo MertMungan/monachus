@@ -8,7 +8,7 @@ const metaDataEventsReducer = (state = initialState, action) => {
       return [...state, action.payload];
     case "DELETE_META_EVENT_DATA":
       return state.filter((item) => item.id !== action.payload);
-    case "UPDATE_RULE_CATEGORY":
+    case "UPDATE_METADATA_EVENT":
       var foundIndex = state.findIndex((x) => x.id === action.payload.id);
       state[foundIndex].description = action.payload.description;
       state[foundIndex].name = action.payload.name;

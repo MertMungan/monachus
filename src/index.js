@@ -14,6 +14,18 @@ import { AbilityContext } from './utility/context/Can'
 import { ThemeContext } from './utility/context/ThemeColors'
 import { IntlProviderWrapper } from './utility/context/Internationalization'
 
+// CUBEJS
+import cubejs from '@cubejs-client/core'
+import { CubeProvider } from '@cubejs-client/react'
+
+const API_URL = 'http://164.90.232.177:4000'
+const CUBEJS_TOKEN =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg5MTE5MzcsImV4cCI6MTY1ODk5ODMzN30._h730j598j57D_2BYNtMEPm4YV0Rmz4yCKjLv4AUY9c'
+const cubejsApi = cubejs(CUBEJS_TOKEN, {
+  apiUrl: `${API_URL}/cubejs-api/v1`
+})
+// CUBEJS
+
 // ** Spinner (Splash Screen)
 import Spinner from './@core/components/spinner/Fallback-spinner'
 
@@ -78,16 +90,18 @@ ReactDOM.render(
     }}
   >
     <Provider store={store}>
-      <Suspense fallback={<Spinner />}>
-        <AbilityContext.Provider value={ability}>
-          <ThemeContext>
-            <IntlProviderWrapper>
-              <LazyApp />
-              <ToastContainer newestOnTop />
-            </IntlProviderWrapper>
-          </ThemeContext>
-        </AbilityContext.Provider>
-      </Suspense>
+      <CubeProvider cubejsApi={cubejsApi}>
+        <Suspense fallback={<Spinner />}>
+          <AbilityContext.Provider value={ability}>
+            <ThemeContext>
+              <IntlProviderWrapper>
+                <LazyApp />
+                <ToastContainer newestOnTop />
+              </IntlProviderWrapper>
+            </ThemeContext>
+          </AbilityContext.Provider>
+        </Suspense>
+      </CubeProvider>
     </Provider>
   </ReactKeycloakProvider>,
   document.getElementById('root')

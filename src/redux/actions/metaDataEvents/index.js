@@ -58,7 +58,7 @@ export const addMetaDataEvents = (metaEventData = []) => async (dispatch, getSta
       };
     
       const response = await axios(config)
-      dispatch({ type: "UPDATE_METADATA_RULE", payload: metaEventData });
+      dispatch({ type: "UPDATE_METADATA_EVENT", payload: metaEventData });
   }
 
 export const deleteMetaDataEvents = (metaEventDataId = "") => async (dispatch, getState) => {

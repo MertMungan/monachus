@@ -4,14 +4,7 @@ import BreadCrumbs from "@components/breadcrumbs";
 import Wizard from "@components/wizard";
 // REACTSTRAP
 
-import { fetchEvents } from "../../../redux/actions/events";
-import {
-  fetchRule,
-  fetchAllRules,
-  addRule,
-  updateRule,
-} from "../../../redux/actions/rules";
-import { fetchMetaDataRules, addMetaDataRules,updateMetaDataRule} from '../../../redux/actions/metaDataRules'
+import { fetchMetaDataRules, addMetaDataRules, updateMetaDataRule } from '../../../redux/actions/metaDataRules'
 
 // ** Roles Components
 import classnames from "classnames";
@@ -29,12 +22,12 @@ import uuid from "react-uuid";
 const Roles = ({
   eventList = [],
   queryList = [],
-  addRule = () => {},
-  updateRule = () => {},
-  fetchMetaDataRules = () => {},
+  addRule = () => { },
+  updateRule = () => { },
+  fetchMetaDataRules = () => { },
   metaRuleData = [],
-  addMetaDataRules = () => {},
-  updateMetaDataRule = () => {}
+  addMetaDataRules = () => { },
+  updateMetaDataRule = () => { }
 }) => {
   const [rulesCategory, setRulesCategory] = useState([]);
   const [eventsArray, setEventsArray] = useState([]);
@@ -64,7 +57,9 @@ const Roles = ({
   const [selectedCategory, setSelectedCategory] = useState("");
   const [stepper, setStepper] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState("");
+  const [sendData, setSendData] = useState(false)
   const ref = useRef(null);
+
 
   useEffect(() => {
     fetchMetaDataRules();
@@ -73,7 +68,7 @@ const Roles = ({
   useEffect(() => {
     setListData(metaRuleData)
   }, [metaRuleData])
-  
+
 
   useEffect(() => {
     if (resetInfo.id !== "") {
@@ -105,69 +100,6 @@ const Roles = ({
   const capitalizeFirst = (str) => {
     return str?.charAt(0).toUpperCase() + str?.slice(1);
   };
-
-  useEffect(() => {
-    if (
-      ruleInfo.id !== "" &&
-      resetInfo.id === "" &&
-      ruleInfo.name !== "" &&
-      ruleInfo.description !== "" &&
-      ruleInfo.assignedEvent !== "" &&
-      ruleInfo.assignedCategory !== "" &&
-      ruleInfo.builderInfo?.length > 0 &&
-      ruleInfo.configuration !== ("" || {})
-    ) {
-      addRule(
-        ruleInfo.id,
-        ruleInfo.assignedEvent,
-        ruleInfo.name,
-        ruleInfo.description,
-        ruleInfo.assignedCategory,
-        ruleInfo.builderInfo[0],
-        ruleInfo.builderInfo[1]
-      );
-    } else if (
-      ruleInfo.id !== "" &&
-      resetInfo.id !== "" &&
-      ruleInfo.id === resetInfo.id &&
-      ruleInfo.name !== "" &&
-      ruleInfo.description !== "" &&
-      ruleInfo.assignedEvent !== "" &&
-      ruleInfo.assignedCategory !== "" &&
-      ruleInfo.builderInfo?.length > 0 &&
-      Object.keys(ruleInfo.builderInfo[0]).length !== 0 &&
-      ruleInfo.configuration !== ("" || {})
-    ) {
-      updateRule(
-        ruleInfo.id,
-        ruleInfo.name,
-        ruleInfo.description,
-        ruleInfo.assignedCategory,
-        ruleInfo.builderInfo[0],
-        ruleInfo.builderInfo[1]
-      );
-    } else if (
-      ruleInfo.id !== "" &&
-      resetInfo.id !== "" &&
-      ruleInfo.id === resetInfo.id &&
-      ruleInfo.name !== "" &&
-      ruleInfo.description !== "" &&
-      ruleInfo.assignedEvent !== "" &&
-      ruleInfo.assignedCategory !== "" &&
-      ruleInfo.builderInfo.length > 0 &&
-      Object.keys(ruleInfo.builderInfo[0]).length === 0 &&
-      ruleInfo.configuration !== ("" || {})
-    ) {
-      updateRule(
-        ruleInfo.id,
-        ruleInfo.name,
-        ruleInfo.description,
-        ruleInfo.assignedCategory,
-        resetInfo?.builderInfo,
-        ruleInfo?.builderInfo
-      );
-    }
-  }, [ruleInfo]);
 
   const handleRuleFirstStep = (name, desc) => {
     if (ruleInfo.id) {
@@ -242,7 +174,7 @@ const Roles = ({
     }
   };
 
-  const handleRuleFourthStep = (configuration) => {
+  const handleRuleFourthStep = (totalData) => {
     if (ruleInfo.id) {
       setRuleInfo({
         id: ruleInfo.id,
@@ -251,7 +183,7 @@ const Roles = ({
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
-        configuration: configuration,
+        totalData: totalData,
       });
     } else {
       setRuleInfo({
@@ -261,12 +193,11 @@ const Roles = ({
         assignedEvent: ruleInfo.assignedEvent,
         assignedCategory: ruleInfo.assignedCategory,
         builderInfo: ruleInfo.builderInfo,
-        configuration: configuration,
+        totalData: totalData,
       });
     }
   };
 
-  console.log("ruleInfo",ruleInfo)
   const steps = [
     {
       id: "rule-definition",
@@ -341,6 +272,7 @@ const Roles = ({
         <>
           <RuleFourthStep
             setRuleFourthStep={handleRuleFourthStep}
+            setSendData={setSendData}
             stepper={stepper}
             type="wizard-horizontal"
             setWizardOpen={setWizardOpen}
@@ -351,94 +283,15 @@ const Roles = ({
     },
   ];
 
-  const options = {
-    chart: {
-      toolbar: {
-        show: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    legend: { show: false },
-    comparedResult: [2, -3, 8],
-    labels: ["App", "Service", "Product"],
-    stroke: { width: 0 },
-    colors: ["#28c76f66", "#28c76f33", "28c76f00"],
-    grid: {
-      padding: {
-        right: -20,
-        bottom: -8,
-        left: -20,
-      },
-    },
-    plotOptions: {
-      pie: {
-        startAngle: -10,
-        donut: {
-          labels: {
-            show: true,
-            name: {
-              offsetY: 15,
-            },
-            value: {
-              offsetY: -15,
-            },
-            total: {
-              show: true,
-              offsetY: 15,
-              label: "App",
-            },
-          },
-        },
-      },
-    },
-    responsive: [
-      {
-        breakpoint: 1325,
-        options: {
-          chart: {
-            height: 100,
-          },
-        },
-      },
-      {
-        breakpoint: 1200,
-        options: {
-          chart: {
-            height: 120,
-          },
-        },
-      },
-      {
-        breakpoint: 1065,
-        options: {
-          chart: {
-            height: 100,
-          },
-        },
-      },
-      {
-        breakpoint: 992,
-        options: {
-          chart: {
-            height: 120,
-          },
-        },
-      },
-    ],
-  };
-
-  
   useEffect(() => {
-    if (ruleInfo.builderInfo.length > 0) {
+    if (sendData) {
       if (metaRuleData.find((item) => item.id === ruleInfo.id)) {
         updateMetaDataRule(ruleInfo)
-    } else {
-      addMetaDataRules(ruleInfo)
+      } else {
+        addMetaDataRules(ruleInfo)
+      }
     }
-    }
-  }, [ruleInfo])
+  }, [sendData])
 
   return (
     <Fragment>
@@ -496,15 +349,10 @@ const Roles = ({
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields, queryList: state.query, metaRuleData: state.metaDataRulesReducer };
+  return {metaRuleData: state.metaDataRulesReducer };
 };
 
 export default connect(mapStateToProps, {
-  fetchEvents,
-  fetchRule,
-  fetchAllRules,
-  addRule,
-  updateRule,
   fetchMetaDataRules,
   addMetaDataRules,
   updateMetaDataRule,

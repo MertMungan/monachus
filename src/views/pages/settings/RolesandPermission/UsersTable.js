@@ -103,38 +103,40 @@ const UsersTable = ({
   const columns = [
     {
       name: "Name",
-      selector: (row) => row.roleName,
+      selector: (row) => row.name
+      ,
       sortable: true,
     },
     {
       name: "Description",
-      selector: (row) => row.roleDescription,
+      selector: (row) => row.description,
       sortable: true,
     },
-    {
-      name: "Assigned To",
-      minWidth: "auto",
-      selector: (row) => {
-        if (row) {
-          const permissions = row.rolePermissions;
-          const entries = Object.entries(permissions);
-          const filteredEntries = entries.filter((entry) => entry[1] === true);
-          const filteredKeys = filteredEntries.map((entry) => entry[0]);
-          const filteredKeysWithoutCRUD = filteredKeys.map((key) => {
-            const newKey = key.replace("CRUD", "");
-            return newKey;
-          });
-          return filteredKeysWithoutCRUD.map((key) => {
-            return (
-              <Badge pill className="text-capitalize">
-                {key}
-              </Badge>
-            );
-          });
-        }
-      },
-      sortable: true,
-    },
+    // {
+    //   name: "Assigned To",
+    //   minWidth: "auto",
+    //   selector: (row) => {
+    //     console.log("row",row)
+    //     if (row) {
+    //       const permissions = row.rolePermissions;
+    //       const entries = Object.entries(permissions);
+    //       const filteredEntries = entries.filter((entry) => entry[1] === true);
+    //       const filteredKeys = filteredEntries.map((entry) => entry[0]);
+    //       const filteredKeysWithoutCRUD = filteredKeys.map((key) => {
+    //         const newKey = key.replace("CRUD", "");
+    //         return newKey;
+    //       });
+    //       return filteredKeysWithoutCRUD.map((key) => {
+    //         return (
+    //           <Badge pill className="text-capitalize">
+    //             {key}
+    //           </Badge>
+    //         );
+    //       });
+    //     }
+    //   },
+    //   sortable: true,
+    // },
     ability.can("create", "settings") &&
     {
       name: "Details",

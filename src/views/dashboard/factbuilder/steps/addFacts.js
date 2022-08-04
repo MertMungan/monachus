@@ -51,7 +51,7 @@ function addFacts(props) {
   const [initBooleanValue, setInitBooleanValue] = useState(false);
   //const [arrayRegisterState, setArrayRegisterState] = useState({});
   const [currentArrayList, setCurrentArrayList] = useState([]);
-  const [fieldsForTable, setFieldsForTable] = useState([]);
+  const [fieldsForTable, setFieldsForTable] = useState({});
   const [name, setName] = useState("");
   let buttonRef = useRef();
 
@@ -70,6 +70,7 @@ function addFacts(props) {
   }, [name]);
 
   const onSubmit = (data) => {
+    console.log("data",data)
     setFieldsForTable(data);
   };
 

@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect, useRef, useContext } from "react";
 import { AbilityContext } from "@src/utility/context/Can";
 // ** Invoice List Sidebar
 
-import { fetchAlarms,fetchAlarmsByCategory } from '../../../../redux/actions/alarmData'
+import { fetchAlarms, fetchAlarmsByCategory } from '../../../../redux/actions/alarmData'
 import ReactJson from "react-json-view";
 
 import { connect } from "react-redux";
@@ -26,7 +26,7 @@ import FourthStep from "./steps/FourthStep";
 
 import {
   ChevronDown,
-  Edit
+  AlertCircle
 } from "react-feather";
 
 // ** Utils
@@ -199,7 +199,7 @@ const Table = ({
   const [ruleModalShow, setRuleModalShow] = useState(false)
   const [eventRowData, setEventRowData] = useState([])
   const [ruleRowData, setRuleRowData] = useState([])
-  const [categorySelectData, setCategorySelectData] = useState([{value:"reset", label:"All Data"}])
+  const [categorySelectData, setCategorySelectData] = useState([{ value: "reset", label: "All Data" }])
   const [assignedTo, setAssignedTo] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -231,33 +231,50 @@ const Table = ({
     },
     {
       name: "Event Name",
-      selector: (row) => 
-      <p 
-      className="mb-0"
-      onClick={() => {
-        setEventModalShow(true)
-        setEventRowData(row.metadata_events)
-      }}>{row.metadata_events.name}</p>,
+      selector: (row) =>
+        <>
+          <p
+            className="mb-0 mr-1"
+          >{row.metadata_events.name}
+            <AlertCircle
+              style={{ cursor: "help" }}
+              className="ml-1 p-0"
+              color='#ed2419'
+              size={15}
+              onClick={() => {
+                setEventModalShow(true)
+                setEventRowData(row.metadata_events)
+              }} /></p>
+
+        </>,
       sortable: true,
-      maxWidth: "150px",
+      maxWidth: "550px",
 
     },
     {
       name: "Event Description",
       selector: (row) => row.description,
       sortable: true,
+      maxWidth: "250px",
+
     },
     {
       name: "Rule Name",
-      selector: (row) => <p 
-      className="mb-0"
-      onClick={() => {
-        setRuleModalShow(true)
-        setRuleRowData(row.metadata_rules)
-      }}>{row.metadata_rules.name}</p>,
+      selector: (row) =>
+        <div>
+          <p
+            className="mb-0"
+          >{row.metadata_rules.name}
+            <AlertCircle
+              style={{ cursor: "help" }}
+              className="ml-1"
+              color='#ed2419'
+              size={15}
+              onClick={() => {
+                setRuleModalShow(true)
+                setRuleRowData(row.metadata_rules)
+              }} /></p></div>,
       sortable: true,
-      maxWidth: "150px",
-
     },
     {
       name: "Rule Description",
@@ -273,6 +290,7 @@ const Table = ({
       name: "Status",
       selector: (row) => row.statu,
       sortable: true,
+      maxWidth: "150px",
     },
     // ability.can("create", "cep") &&
     // {
@@ -301,12 +319,12 @@ const Table = ({
 
   const curD = new Date()
   const curDate = curD.getFullYear() + '-' + (curD.getMonth() + 1) + '-' + curD.getDate();
-  const curTime = (curD.getHours()-currentPlan.value) + ':' + curD.getMinutes() + ':' + curD.getSeconds()
+  const curTime = (curD.getHours() - currentPlan.value) + ':' + curD.getMinutes() + ':' + curD.getSeconds()
   const curDateTime = curDate + "T" + curTime
 
   useEffect(() => {
-    fetchAlarms(currentPage,currentRole.value,curDateTime,currentPlan.value)
-  }, [currentPage,currentRole,curDateTime]);
+    fetchAlarms(currentPage, currentRole.value, curDateTime, currentPlan.value)
+  }, [currentPage, currentRole, curDateTime]);
 
   useEffect(() => {
     for (let index = 0; index < ruleCategoryData.length; index++) {
@@ -320,7 +338,7 @@ const Table = ({
   // ** User filter options
 
   const planOptions = [
-    { value: 0, label: "Total Data"},
+    { value: 0, label: "Total Data" },
     { value: 1, label: "1 Hour Ago" },
     { value: 3, label: "3 Hour Ago" },
     { value: 8, label: "8 Hour Ago" },
@@ -511,24 +529,26 @@ const Table = ({
           <CardText className='mb-2'>{ruleRowData.description}</CardText>
           {/* SRC RULE'LARIN METADASI OLDUĞU ZAMAN YANDAKİ ŞEKİLDE DEĞİŞECEK ruleRowData.metadata?.children1  */}
           <ReactJson
-                  src={{"b88babba-cdef-4012-b456-7182352713e1": {
-                    "type": "rule",
-                    "properties": {
-                        "field": "sayı",
-                        "operator": "equal",
-                        "value": [
-                            "75"
-                        ],
-                        "valueSrc": [
-                            "value"
-                        ],
-                        "valueType": [
-                            "text"
-                        ]
-                    }
-                }}}
-                  theme="monokai"
-                />
+            src={{
+              "b88babba-cdef-4012-b456-7182352713e1": {
+                "type": "rule",
+                "properties": {
+                  "field": "sayı",
+                  "operator": "equal",
+                  "value": [
+                    "75"
+                  ],
+                  "valueSrc": [
+                    "value"
+                  ],
+                  "valueType": [
+                    "text"
+                  ]
+                }
+              }
+            }}
+            theme="monokai"
+          />
         </ModalBody>
       </Modal>
       <>

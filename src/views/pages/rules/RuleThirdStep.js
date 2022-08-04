@@ -5,11 +5,7 @@ import { Col, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
 import { connect } from "react-redux";
-import {
-  fetchEvents,
-  addRule,
-  deleteEvents,
-} from "../../../redux/actions/rules/index";
+
 import QueryBuilder from "../../dashboard/querybuilder_2";
 // REDUX
 
@@ -31,12 +27,7 @@ function RuleThirdStep(props) {
     resetEvent,
     resetInfo,
   } = props;
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const {register,handleSubmit,reset, formState: { errors }} = useForm();
 
   return (
     <Fragment>
@@ -115,8 +106,6 @@ RuleThirdStep.propTypes = {
   setRuleSecondStep: PropTypes.func,
   resetEvent: PropTypes.object,
   resetCategory: PropTypes.string,
-  eventList: PropTypes.array,
-  addRule: PropTypes.func,
   eventsArray: PropTypes.array,
   rulesCategory: PropTypes.array,
   setWizardOpen: PropTypes.func,
@@ -133,7 +122,7 @@ RuleThirdStep.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields };
+  return { };
 };
 
-export default connect(mapStateToProps, { addRule })(RuleThirdStep);
+export default connect(mapStateToProps, {})(RuleThirdStep);

@@ -34,8 +34,6 @@ import {
 } from "reactstrap";
 // REDUX
 import { connect } from "react-redux";
-import { fetchEvents } from "../../../redux/actions/events/index";
-import { fetchRule } from "../../../redux/actions/rules/index";
 import { deleteMetaDataRules } from "../../../redux/actions/metaDataRules"
 // REDUX
 
@@ -334,7 +332,7 @@ const Table = ({
   );
 };
 const mapStateToProps = (state) => {
-  return { eventList: state.fields, queryList: state.query };
+  return {  };
 };
 
-export default connect(mapStateToProps, { fetchEvents, fetchRule,deleteMetaDataRules })(Table);
+export default connect(mapStateToProps, { deleteMetaDataRules })(Table);

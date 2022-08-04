@@ -1,107 +1,114 @@
-import { useContext, useState } from 'react'
-import { Row, Col } from 'reactstrap'
+import React, { useContext, useState, useEffect } from 'react'
+import { Row, Col, Button, Input, Card, ButtonGroup } from 'reactstrap'
 import CompanyTable from './CompanyTable'
 import { ThemeColors } from '@src/utility/context/ThemeColors'
-import Earnings from '@src/views/ui-elements/cards/analytics/Earnings'
-import CardMedal from '@src/views/ui-elements/cards/advance/CardMedal'
 import CardMeetup from '@src/views/ui-elements/cards/advance/CardMeetup'
-import StatsCard from '@src/views/ui-elements/cards/statistics/StatsCard'
 import GoalOverview from '@src/views/ui-elements/cards/analytics/GoalOverview'
 import RevenueReport from './components/RevenueReport'
 import MyResponsiveBar from './components/MyResponsiveBar'
-import OrdersBarChart from '@src/views/ui-elements/cards/statistics/OrdersBarChart'
-import ProfitLineChart from '@src/views/ui-elements/cards/statistics/ProfitLineChart'
 import CardTransactions from '@src/views/ui-elements/cards/advance/CardTransactions'
 import CardBrowserStates from '@src/views/ui-elements/cards/advance/CardBrowserState'
 
-// CUBEJS
-import cubejs from '@cubejs-client/core'
-import { CubeProvider } from '@cubejs-client/react'
-
-const API_URL = 'http://164.90.232.177:4000'
-const CUBEJS_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTg5MTE5MzcsImV4cCI6MTY1ODk5ODMzN30._h730j598j57D_2BYNtMEPm4YV0Rmz4yCKjLv4AUY9c'
-const cubejsApi = cubejs(CUBEJS_TOKEN, {
-  apiUrl: `${API_URL}/cubejs-api/v1`
-})
-// CUBEJS
-
 import '@styles/react/libs/charts/apex-charts.scss'
 import '@styles/base/pages/dashboard-ecommerce.scss'
+import '@styles/react/apps/app-invoice.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
+
+// Constants
+import { dayTime } from './data/constants'
+import {
+  query_01,
+  query_02,
+  query_03,
+  query_04,
+  query_05
+} from './data/cubeQueries'
+
+//CUBEJS_TOKEN
+import { useCubeQuery } from '@cubejs-client/react'
 
 const EcommerceDashboard = () => {
   const { colors } = useContext(ThemeColors),
     trackBgColor = '#e9ecef'
 
-  const [selectedGarnule, setSelectedGarnule] = useState('Last 7 days')
+  const dayTimeList = dayTime()
+  const [handleGranularity, setHandleGranularity] = useState('This year')
+  const [justEventsCount, setJustEventsCount] = useState(0)
+  const [rSelected, setRSelected] = useState(0)
 
-  const queryData = {
-    timeDimensions: [
-      {
-        dimension: 'Alarms.alarmDatetime',
-        granularity: 'day'
-      }
-    ],
-    order: {
-      'Alarms.count': 'desc'
-    },
-    measures: ['Alarms.count'],
-    dimensions: ['Alarms.ruleId']
-  }
-  const queryData2 = {
-    timeDimensions: [
-      {
-        dimension: 'Alarms.alarmDatetime',
-        granularity: 'day'
-      }
-    ],
-    order: {
-      'Alarms.count': 'desc'
-    },
-    measures: ['Alarms.count'],
-    dimensions: ['Alarms.eventType']
+  const firstQuery = useCubeQuery(query_01(handleGranularity))
+  const secondQuery = useCubeQuery(query_02(handleGranularity))
+  const barQuery = useCubeQuery(query_03(handleGranularity))
+  const onlyEventsCount = useCubeQuery(query_04())
+  const supportQuery = useCubeQuery(query_05(handleGranularity))
+
+  useEffect(() => {
+    setHandleGranularity(dayTimeList[rSelected])
+  }, [rSelected])
+
+  useEffect(() => {
+    if (supportQuery?.resultSet) {
+      setJustEventsCount(
+        onlyEventsCount?.resultSet?.loadResponse?.results[0]?.data[0][
+          'Events.count'
+        ]
+      )
+    }
+  }, [supportQuery])
+
+  const renderButtonGroup = () => {
+    return (
+      <ButtonGroup size='sm'>
+        {dayTimeList?.map((item, index) => {
+          return (
+            <Button
+              outline
+              key={index}
+              color='primary'
+              onClick={() => setRSelected(index)}
+              active={rSelected === index}
+            >
+              {item}
+            </Button>
+          )
+        })}
+      </ButtonGroup>
+    )
   }
 
   return (
-    <div id='dashboard-ecommerce'>
-      <CubeProvider cubejsApi={cubejsApi}>
-        {/* <Row className='match-height'>
-          <Col xl='4' md='6' xs='12'>
-            <CardMedal />
-          </Col>
-          <Col xl='8' md='6' xs='12'>
-            <StatsCard cols={{ xl: '3', sm: '6' }} />
-          </Col>
-        </Row> */}
+    <>
+      <Card>
+        <div className='invoice-list-table-header w-100 py-2'>
+          <Row className='match-height'>
+            <Col lg='12' className='d-flex align-items-end px-0 px-lg-1'>
+              <div className='d-flex align-items-center mr-2'>
+                {renderButtonGroup()}
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </Card>
+      <div id='dashboard-ecommerce'>
         <Row className='match-height'>
-          {/* <Col lg='4' md='12'>
-            <Row className='match-height'>
-              <Col lg='6' md='3' xs='6'>
-                <OrdersBarChart warning={colors.warning.main} />
-              </Col>
-              <Col lg='6' md='3' xs='6'>
-                <ProfitLineChart info={colors.info.main} />
-              </Col>
-              <Col lg='12' md='6' xs='12'>
-                <Earnings success={colors.success.main} />
-              </Col>
-            </Row>
-          </Col> */}
-          <Col lg='12' md='12' xs='12'>
+          <Col lg='12' xs='12'>
             <RevenueReport
-              setSelectedGarnule={setSelectedGarnule}
-              selectedGarnule={selectedGarnule}
+              barQueryData={barQuery}
+              onlyEventCount={justEventsCount}
+              supportQuery={supportQuery}
             />
           </Col>
         </Row>
-        <Row className='match-height' style={{ height: 500, width: '100%' }}>
+
+        <Row className='match-height' style={{ height: 500 }}>
           <Col md='6' xs='12'>
-            <MyResponsiveBar cubeQuery={queryData} legend='Events' />
+            <MyResponsiveBar cubeQuery={firstQuery} legend='Events' />
           </Col>
           <Col md='6' xs='12'>
-            <MyResponsiveBar cubeQuery={queryData2} legend='Alerts' />
+            <MyResponsiveBar cubeQuery={secondQuery} legend='Alerts' />
           </Col>
         </Row>
+
         <Row className='match-height'>
           <Col lg='8' xs='12'>
             <CompanyTable />
@@ -119,8 +126,8 @@ const EcommerceDashboard = () => {
             <CardTransactions />
           </Col>
         </Row>
-      </CubeProvider>
-    </div>
+      </div>
+    </>
   )
 }
 

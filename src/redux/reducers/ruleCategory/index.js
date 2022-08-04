@@ -8,7 +8,7 @@ const ruleCategoryReducer = (state = initialState, action) => {
       return action.payload;
     case "DELETE_RULE_CATEGORY":
       return state.filter((item) => item.id !== action.payload);
-    case "UPDATE_RULE_CATEGORY":
+    case "UPDATE_CATEGORY":
       var foundIndex = state.findIndex(x => x.id === action.payload.id);
       state[foundIndex].description = action.payload.description
       state[foundIndex].name = action.payload.name

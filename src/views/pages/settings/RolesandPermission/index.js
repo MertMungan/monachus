@@ -124,16 +124,18 @@ export const Roles = ({
     fetchRoles();
     fetchKeycloakRoles();
     fetchKeycloakClientRoles();
+    
   }, []);
-
+  
+console.log("keycloakRolesList",keycloakRolesList)
 
   useEffect(() => {
-    if (rolesList.length > 0) {
-      setTableRoles(rolesList);
+    if (clientRoles.length > 0) {
+      setTableRoles(clientRoles);
       // const data = []
       // setTableData()
     }
-  }, [rolesList]);
+  }, [clientRoles]);
 
   useEffect(() => {
     if (

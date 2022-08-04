@@ -47,9 +47,9 @@ import "@styles/react/libs/tables/react-dataTable-component.scss";
 
 const FieldsTable = ({
   listData = [],
-  setWizardOpen = () => {},
+  setWizardOpen = () => { },
   eventName = "",
-  setFields = () => {},
+  setFields = () => { },
   resetFields = [],
   factInfo = [],
 }) => {
@@ -59,23 +59,36 @@ const FieldsTable = ({
   const [listBilgisi, setListBilgisi] = useState([]);
 
   useEffect(() => {
-  
+
     if (factInfo.fields?.length > 0) {
       setListBilgisi(factInfo.fields);
     }
   }, [factInfo])
 
-
+let list = []
   useEffect(() => {
     if (resetFields.length === 0 && listData) {
       // push listData to listBilgisi while keeping the previous state
-      let list = [...listBilgisi, listData];
+      if (Object.keys(listData).length !== 0) {
+      list = [...listBilgisi, listData];
+    }
       // if the first element of the list is an empty array, remove it
       // if (list[0].length === 0) {
       //   list.shift();
       // }
-      
-      setListBilgisi(list);
+      // if (list.length > 1) {
+      //   const cleanList = list.map((item) => {
+      //     console.log("item",Array.isArray(item))
+      //     if (Array.isArray(item)) {
+      //       console.log("item",item)
+      //     } else return item
+      //   })
+      //   setListBilgisi(cleanList);
+
+
+      // } else {
+      //
+      setListBilgisi(list)   
     } else if (resetFields.length !== 0 && listData) {
       let mapped = resetFields.map((item) => {
         return {
@@ -95,7 +108,12 @@ const FieldsTable = ({
   }, [listData]);
 
 
-
+const removeElement = (value = {}) => {
+  const index = listBilgisi.findIndex(item => (item.factDefination === value.factDefination))
+  listBilgisi.splice(index,1)
+  console.log("listBilgisi",listBilgisi)
+  setListBilgisi([...listBilgisi])
+}
 
 
 
@@ -116,7 +134,7 @@ const FieldsTable = ({
       cell: (row) => {
         return (
           <div className="d-flex">
-            <Trash size={15} />
+            <Trash size={15} onClick={() => {removeElement(row)}} />
           </div>
         );
       },

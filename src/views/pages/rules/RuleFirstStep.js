@@ -6,11 +6,7 @@ import { Label, FormGroup, Row, Col, Input, Form, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
 import { connect } from "react-redux";
-import {
-  fetchEvents,
-  addRule,
-  deleteEvents,
-} from "../../../redux/actions/rules/index";
+
 // REDUX
 
 function RuleFirstStep(props) {
@@ -18,7 +14,6 @@ function RuleFirstStep(props) {
     stepper,
     type,
     setRuleFirstStep,
-    addRule,
     setWizardOpen,
     wizardOpen,
     resetName,
@@ -122,7 +117,7 @@ RuleFirstStep.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  return { eventList: state.fields };
+  return {};
 };
 
-export default connect(mapStateToProps, { addRule })(RuleFirstStep);
+export default connect(mapStateToProps, null)(RuleFirstStep);

@@ -35,14 +35,6 @@ export default [
         resource: 'dashboard'
       },
       {
-        id: 'test',
-        title: 'test',
-        icon: <Circle size={12} />,
-        navLink: '/monachus/test',
-        action: 'read',
-        resource: 'dashboard'
-      },
-      {
         id: 'monitor',
         title: 'Event Monitor',
         icon: <Circle size={12} />,

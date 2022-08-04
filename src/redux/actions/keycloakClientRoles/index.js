@@ -138,6 +138,7 @@ export const createKeycloakClientRoles =
   }}
 
 export const deleteKeycloakClientRoles =(selectedRole = []) => async (dispatch, getState) => {
+    console.log("selectedRole",selectedRole)
     const allClientofRealm = await getRealmClients()
     let realmClients = allClientofRealm
     let choosenClient = {}

@@ -170,7 +170,6 @@ function QueryBuilder(props) {
         chosenFields = emptyInitValue;
         setQueryValue(emptyInitValue);
       }
-      debugger;
       const convertedQueryFormat = convertToQueryBuilderFormat(selectedFact);
 
       const lastTreeConfig = treeConfig(

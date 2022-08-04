@@ -34,7 +34,6 @@ function UserFirstStep(props) {
 
 
   const onSubmit = (data) => {
-
     const filteredClientRoles = clientRoles.find(item => item.name === data.roleName)
     if (filteredClientRoles) {
       updateKeycloakClientRoles(data,filteredClientRoles)

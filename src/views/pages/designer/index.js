@@ -19,9 +19,7 @@ import { fetchEmailTemplateData } from "../../../redux/actions/notificationEmail
 import { connect } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { EditorState, convertToRaw } from "draft-js";
-import htmlToDraft from "html-to-draftjs";
-import draftToHtml from "draftjs-to-html";
-import Mustache from "mustache";
+
 import { EDITOR_JS_TOOLS } from "./components/tools";
 import EditorJS from "@editorjs/editorjs";
 import "./editor.css";
@@ -49,9 +47,10 @@ function index({ emailTemplatesData = [], fetchEmailTemplateData = () => {} }) {
   const [mustacheOutput, setMustacheOutput] = useState("");
 
   const [error, setError] = useState("");
-  const ejInstance = useRef();
   const [editorData, setEditorData] = React.useState(DEFAULT_INITIAL_DATA);
   const [emailData, setEmailData] = useState([]);
+  const ejInstance = useRef();
+
   const initEditor = () => {
     const editor = new EditorJS({
       holder: EDITTOR_HOLDER_ID,

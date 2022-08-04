@@ -5,13 +5,7 @@ import { Label, FormGroup, Row, Col, Input, Form, Button } from "reactstrap";
 import { ArrowLeft, ArrowRight } from "react-feather";
 
 import { connect } from "react-redux";
-import {
-  fetchEvents,
-  addRule,
-  deleteEvents,
-} from "../../../redux/actions/rules/index";
 
-import { fetchRuleCategory } from "../../../redux/actions/ruleCategory/index";
 // REDUX
 
 function RuleSecondStep(props) {
@@ -19,17 +13,11 @@ function RuleSecondStep(props) {
     stepper,
     type,
     setRuleSecondStep,
-    addRule,
     setWizardOpen,
-    wizardOpen,
     resetEvent,
     resetCategory,
-    eventsArray,
-    rulesCategory,
     setSelectedEvent,
     setSelectedCategory,
-    categoryData,
-    fetchRuleCategory,
     resetInfo,
     metaCategoryData,
     metaEventData,
@@ -53,9 +41,6 @@ function RuleSecondStep(props) {
     reset();
   };
 
-  useEffect(() => {
-    fetchRuleCategory();
-  }, []);
 
   useEffect(() => {
     if (metaCategoryData.length > 0) {
@@ -195,11 +180,9 @@ RuleSecondStep.propTypes = {
   setRuleSecondStep: PropTypes.func,
   resetEvent: PropTypes.object,
   resetCategory: PropTypes.string,
-  eventList: PropTypes.array,
   addRule: PropTypes.func,
   eventsArray: PropTypes.array,
   rulesCategory: PropTypes.array,
-  categoryData: PropTypes.array,
   fetchRuleCategory: PropTypes.func,
   resetInfo: PropTypes.object,
   metaCategoryData: PropTypes.array,
@@ -208,13 +191,11 @@ RuleSecondStep.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    eventList: state.fields,
-    categoryData: state.ruleCategoryReducer,
     metaCategoryData: state.ruleCategoryReducer,
     metaEventData: state.metaDataEventsReducer,
   };
 };
 
-export default connect(mapStateToProps, { addRule, fetchRuleCategory })(
+export default connect(mapStateToProps, null)(
   RuleSecondStep
 );

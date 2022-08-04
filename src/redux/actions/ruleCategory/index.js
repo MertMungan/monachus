@@ -81,5 +81,5 @@ var config = {
 };
 
 const response = await axios(config)
-dispatch({ type: "UPDATE_RULE_CATEGORY", payload: ruleCategoryData });
+dispatch({ type: "UPDATE_CATEGORY", payload: ruleCategoryData });
 }

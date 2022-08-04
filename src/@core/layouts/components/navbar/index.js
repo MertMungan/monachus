@@ -99,7 +99,7 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     if (userData && userProfile) {
-      console.log(keycloak)
+      // console.log(keycloak)
       localStorage.setItem(
         'userData',
         JSON.stringify({

@@ -14,58 +14,15 @@ import {
   Col
 } from 'reactstrap'
 import Chart from 'react-apexcharts'
-import { useCubeQuery } from '@cubejs-client/react'
 
 const SupportTracker = ({
   primary,
   danger,
-  setSelectedGarnule,
-  selectedGarnule = 'Last 7 days'
+  allEventsCountList = 0,
+  eventsValues = [0],
+  alarmsValues = [0],
+  supportQuery
 }) => {
-  const [data, setData] = useState(null)
-  const [chartSeries, setChartSeries] = useState([0])
-
-  const { resultSet, isLoading, error, progress } = useCubeQuery({
-    measures: ['Alarms.count', 'Events.count'],
-    timeDimensions: [
-      {
-        dimension: 'Alarms.alarmDatetime'
-      }
-    ],
-    order: {}
-  })
-
-  const rawData = resultSet?.rawData()
-  useEffect(() => {
-    if (rawData) {
-      const alarmPercent = parseFloat(
-        (rawData[0]['Events.count'] / rawData[0]['Alarms.count']) * 100
-      )
-      setChartSeries([alarmPercent])
-    }
-  }, [rawData])
-
-  useEffect(() => {
-    axios
-      .get('/card/card-analytics/support-tracker')
-      .then((res) => setData(res.data))
-  }, [])
-
-  const dayTime = [
-    'Last 7 days',
-    'Yesterday',
-    'This week',
-    'This month',
-    'This quarter',
-    'This year',
-    'Last 30 days',
-    'Last week',
-    'Last month',
-    'Last month',
-    'Last quarter',
-    'Last year'
-  ]
-
   const options = {
     plotOptions: {
       radialBar: {
@@ -111,60 +68,80 @@ const SupportTracker = ({
     stroke: {
       dashArray: 8
     },
-    labels: ['Completed Tickets']
+    labels: ['Triggered Events']
   }
 
-  console.log(selectedGarnule)
+  const [chartSeries, setChartSeries] = useState([0])
+  const [alarmsCount, setAlarmsCount] = useState(0)
+  const [eventsCount, setEventsCount] = useState(0)
+  const [totalEventsCountState, setTotalEventsCountState] = useState(0)
 
-  return data !== null ? (
+  const rawData = supportQuery?.resultSet?.rawData()
+
+  useEffect(() => {
+    if (rawData?.length > 0) {
+      const totalAlarmsList = rawData.map((rawData) => rawData['Alarms.count'])
+      const totalEventsList = rawData.map(
+        (rawData) => rawData['Alarms.countDistinctEvent']
+      )
+      const totalAlarms = alarmsValues.reduce(
+        (a, b) => parseInt(a) + parseInt(b),
+        0
+      )
+      const totalEvents = eventsValues.reduce(
+        (a, b) => parseInt(a) + parseInt(b),
+        0
+      )
+      setAlarmsCount(-totalAlarms)
+      setEventsCount(totalEvents)
+    }
+  }, [alarmsValues, eventsValues])
+
+  useEffect(() => {
+    if (allEventsCountList) {
+      setTotalEventsCountState(allEventsCountList)
+    }
+  }, [allEventsCountList])
+
+  useEffect(() => {
+    const alarmPercent = parseFloat(
+      (eventsCount / totalEventsCountState) * 100
+    ).toFixed(2)
+    setChartSeries([alarmPercent])
+  }, [totalEventsCountState, eventsCount])
+
+  return chartSeries !== null ? (
     <Card>
       <CardHeader className='pb-0'>
-        <CardTitle tag='h4'>Alarm Tracker</CardTitle>
-        <UncontrolledDropdown className='chart-dropdown'>
-          <DropdownToggle
-            color=''
-            className='bg-transparent btn-sm border-0 p-50'
-          >
-            {selectedGarnule}
-          </DropdownToggle>
-          <DropdownMenu right>
-            {dayTime.map((item, i) => (
-              <DropdownItem className='w-100' key={`${item}-${i}`}>
-                <span onClick={(e) => console.log(e.currentTarget)}>
-                  {item}
-                </span>
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </UncontrolledDropdown>
+        <CardTitle tag='h4'>Alert Tracker</CardTitle>
       </CardHeader>
       <CardBody>
         <Row>
-          <Col sm='2' className='d-flex flex-column flex-wrap text-center'>
-            <h1 className='font-large-2 font-weight-bolder mt-2 mb-0'></h1>
-            {/* <CardText>Tickets</CardText> */}
-          </Col>
-          <Col sm='10' className='d-flex justify-content-center'>
-            <Chart
-              options={options}
-              series={chartSeries}
-              type='radialBar'
-              height={270}
-              id='support-tracker-card'
-            />
+          <Col sm='12' className='d-flex justify-content-center'>
+            {chartSeries[0] && (
+              <Chart
+                options={options}
+                series={chartSeries}
+                type='radialBar'
+                height={270}
+                id='support-tracker-card'
+              />
+            )}
           </Col>
         </Row>
         <div className='d-flex justify-content-between mt-1'>
           <div className='text-center'>
-            <CardText className='mb-50'>Events</CardText>
-            <span className='font-large-1 font-weight-bold'>
-              {rawData && rawData[0]['Events.count']}
-            </span>
+            <CardText className='mb-50'>Triggered Events</CardText>
+            <span className='font-large-1 font-weight-bold'>{eventsCount}</span>
           </div>
           <div className='text-center'>
-            <CardText className='mb-50'>Alarms</CardText>
+            <CardText className='mb-50'>Alert</CardText>
+            <span className='font-large-1 font-weight-bold'>{alarmsCount}</span>
+          </div>
+          <div className='text-center'>
+            <CardText className='mb-50'>Total Events</CardText>
             <span className='font-large-1 font-weight-bold'>
-              {rawData && rawData[0]['Alarms.count']}
+              {totalEventsCountState}
             </span>
           </div>
         </div>

@@ -169,6 +169,11 @@ const UsersTable = ({
       name: "Details",
       allowOverflow: true,
       cell: (row) => {
+        console.log("row",row)
+
+        if (row.user.username === "admin") {
+          return
+        } else {
         return (
           <>
             <Edit
@@ -181,11 +186,11 @@ const UsersTable = ({
             <Trash
               size={15}
               onClick={() => {
-                deleteKeycloakUser(row.id)
+                deleteKeycloakUser(row.user.id)
               }}
             ></Trash>
           </>
-        );
+        )};
       },
     },
   ];
